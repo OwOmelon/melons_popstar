@@ -1,10 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Board from './components/Board.vue'
+</script>
 
 <template>
-  <p class="rounded bg-red-400 p-2 font-bold text-white">
-    new fuckin project babyyyy
-  </p>
-  <p>um</p>
+  <Board />
 </template>
 
 <style lang="postcss">
