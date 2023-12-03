@@ -12,18 +12,21 @@ const emit = defineEmits<{
 	<div
 		:style="{ backgroundColor: color }"
 		:class="[
-			// {'exploded': exploded},
 			state,
 			'grid aspect-square w-10 place-items-center rounded text-xs border-2 border-transparent',
 		]"
 		@click="emit('explode-tile')"
 	>
-		<p>{{ pos.x }} | {{ pos.y }}</p>
+		<p>O</p>
 	</div>
 </template>
 
 <style scoped lang="postcss">
-.exploded, .FOCUSED {
+.EXPLODE {
 	@apply border-black;
+}
+
+.CLEARED {
+	@apply opacity-25
 }
 </style>

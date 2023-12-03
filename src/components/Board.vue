@@ -9,11 +9,20 @@ const board = useBoardStore();
 
 <template>
 	<div class="flex gap-1">
-		<div class="flex flex-col gap-[inherit]" v-for="column in board.board">
+		<div
+			class="flex flex-col gap-[inherit]"
+			v-for="(column, columnIndex) in board.board"
+		>
 			<Tile
-				v-for="tile in column"
+				v-for="(tile, rowIndex) in column"
 				v-bind="tile"
-				@explode-tile="board.focusTile(tile.pos)"
+				@explode-tile="
+					() => {
+						const exploded = board.explodeTile({ x: columnIndex, y: rowIndex });
+
+						if (exploded) board.clearExplodedTiles();
+					}
+				"
 			/>
 		</div>
 	</div>

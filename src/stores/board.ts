@@ -6,10 +6,9 @@ export type TilePosition = {
 	y: number;
 };
 
-export type TileState = "IDLE" | "FOCUSED" | "EXPLODED";
+export type TileState = "IDLE" | "EXPLODE" | "CLEARED";
 
 export type Tile = {
-	readonly pos: TilePosition;
 	readonly color: string;
 	state: TileState;
 };
@@ -28,7 +27,6 @@ export const useBoardStore = defineStore("board", () => {
 
 			for (let y = 0; y < 10; y++) {
 				const tile: Tile = {
-					pos: { x, y },
 					state: "IDLE",
 					color: tilePalette[Math.floor(Math.random() * tilePalette.length)],
 				};
@@ -42,59 +40,64 @@ export const useBoardStore = defineStore("board", () => {
 		board.value = newGrid;
 	}
 
-	function focusTile(pos: TilePosition): void {
+	function explodeTile(pos: TilePosition): boolean {
 		const tile = getTile(pos);
 
-		if (!tile || tile.state === "EXPLODED") return;
+		if (!tile || tile.state === "CLEARED") return false;
 
-		const adjacentTiles = getLinearAdjacentTiles(pos);
+		let tileWasCleared = false;
+		const adjacentPositions = getLinearAdjacentPositions(pos);
 
-		adjacentTiles.forEach((adjTile) => {
-			if (adjTile.state === "IDLE" && adjTile.color === tile.color) {
-				adjTile.state = "FOCUSED";
+		adjacentPositions.forEach((adjPos) => {
+			const adjTile = getTile(adjPos);
 
-				focusTile(adjTile.pos);
+			if (!adjTile || adjTile.state !== "IDLE") return false;
+
+			if (adjTile.color === tile.color) {
+				tileWasCleared = true;
+				adjTile.state = "EXPLODE";
+
+				explodeTile(adjPos);
 			}
 		});
+
+		return tileWasCleared;
 	}
 
-	function explodeFocusedTiles(): void {
-		board.value.forEach((column) => {
-			column.forEach((tile) => {
-				if (tile.state === "FOCUSED") {
-					tile.state = "EXPLODED";
-				}
+	function clearExplodedTiles(): void {
+		setTimeout(() => {
+			board.value.forEach((column, columnIndex) => {
+				const orderedColumn: Tile[] = [];
+
+				column.forEach((tile) => {
+					if (tile.state === "EXPLODE") {
+						tile.state = "CLEARED";
+
+						orderedColumn.unshift(tile);
+					} else {
+						orderedColumn.push(tile);
+					}
+				});
+
+				board.value[columnIndex] = orderedColumn;
 			});
-		});
-	}
-
-	function tileIsExplodable(tile: Tile, adjTiles: Tile[]): boolean {
-		return adjTiles.some(
-			(adjTile) => adjTile.state === "IDLE" && adjTile?.color === tile.color,
-		);
+		}, 1000);
 	}
 
 	function getTile(pos: TilePosition): Tile | null {
 		return board.value?.[pos.x]?.[pos.y] ?? null;
 	}
 
-	function getLinearAdjacentTiles(pos: TilePosition): Tile[] {
-		const adjacentTiles: Tile[] = [];
-		const linearAdjacentPositions = [
+	function getLinearAdjacentPositions(pos: TilePosition): TilePosition[] {
+		return [
 			{ x: pos.x, y: pos.y - 1 },
 			{ x: pos.x, y: pos.y + 1 },
 			{ x: pos.x - 1, y: pos.y },
 			{ x: pos.x + 1, y: pos.y },
 		];
-
-		linearAdjacentPositions.forEach((pos) => {
-			const tile = getTile(pos);
-
-			if (tile) adjacentTiles.push(tile);
-		});
-
-		return adjacentTiles;
 	}
 
-	return { board, createBoard, focusTile };
+	// ------------------------------
+
+	return { board, createBoard, explodeTile, clearExplodedTiles };
 });
