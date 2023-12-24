@@ -73,22 +73,34 @@ export const useBoardStore = defineStore("board", () => {
 
 	function clearExplodedTiles(): void {
 		setTimeout(() => {
+			const organizedBoard: Tile[][] = [];
+
 			board.value.forEach((column, columnIndex) => {
-				const orderedColumn: Tile[] = [];
+				const organizedColumn: Tile[] = [];
+				let clearedTiles = 0;
 
 				column.forEach((tile) => {
 					if (tile.state === "EXPLODE") {
 						tile.state = "CLEARED";
 
-						orderedColumn.unshift(tile);
+						organizedColumn.unshift(tile);
 					} else {
-						orderedColumn.push(tile);
+						organizedColumn.push(tile);
 					}
+
+					if (tile.state === "CLEARED") clearedTiles++;
 				});
 
-				board.value[columnIndex] = orderedColumn;
+				console.log(columnIndex, clearedTiles);
+
+				if (clearedTiles !== column.length) {
+					organizedBoard.push(organizedColumn);
+				} else {
+				}
 			});
-		}, 1000);
+
+			board.value = organizedBoard;
+		}, 500);
 	}
 
 	function getTile(pos: TilePosition): Tile | null {
