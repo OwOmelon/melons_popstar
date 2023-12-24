@@ -10,10 +10,9 @@ const emit = defineEmits<{
 
 <template>
 	<div
-		:style="{ backgroundColor: color }"
 		:class="[
-			state,
-			'grid aspect-square w-10 place-items-center rounded text-xs border-2 border-transparent',
+			state, color,
+			'grid aspect-square w-10 place-items-center rounded border-2 border-transparent text-xs',
 		]"
 		@click="emit('explode-tile')"
 	>
@@ -22,11 +21,31 @@ const emit = defineEmits<{
 </template>
 
 <style scoped lang="postcss">
+.YELLOW {
+	@apply bg-[#FFF18E];
+}
+
+.PURPLE {
+	@apply bg-[#DDAAFF];
+}
+
+.BLUE {
+	@apply bg-[#B0EDFC];
+}
+
+.GREEN {
+	@apply bg-[#ADFF9B];
+}
+
+.RED {
+	@apply bg-[#FF84A5];
+}
+
 .EXPLODE {
 	@apply border-black;
 }
 
 .CLEARED {
-	@apply opacity-25
+	@apply opacity-25;
 }
 </style>

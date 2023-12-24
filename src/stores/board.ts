@@ -7,9 +7,10 @@ export type TilePosition = {
 };
 
 export type TileState = "IDLE" | "EXPLODE" | "CLEARED";
+export type TileColor = "YELLOW" | "PURPLE" | "BLUE" | "GREEN" | "RED";
 
 export type Tile = {
-	readonly color: string;
+	readonly color: TileColor;
 	state: TileState;
 };
 
@@ -18,7 +19,13 @@ export const useBoardStore = defineStore("board", () => {
 
 	createBoard();
 	function createBoard(): void {
-		const tilePalette = ["#FFF18E", "#DDAAFF", "#B0EDFC", "#ADFF9B", "#FF84A5"];
+		const tilePalette: TileColor[] = [
+			"YELLOW",
+			"PURPLE",
+			"BLUE",
+			"GREEN",
+			"RED",
+		];
 
 		let newGrid: Tile[][] = [];
 
