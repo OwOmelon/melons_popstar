@@ -71,7 +71,7 @@ export const useBoardStore = defineStore("board", () => {
 		return tileWasCleared;
 	}
 
-	function clearExplodedTiles(): void {
+	function organizedBoard(): void {
 		setTimeout(() => {
 			const organizedBoard: Tile[][] = [];
 
@@ -118,5 +118,5 @@ export const useBoardStore = defineStore("board", () => {
 
 	// ------------------------------
 
-	return { board, createBoard, explodeTile, clearExplodedTiles };
+	return { board, createBoard, explodeTile, organizedBoard };
 });

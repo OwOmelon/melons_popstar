@@ -20,7 +20,7 @@ const board = useBoardStore();
 					() => {
 						const exploded = board.explodeTile({ x: columnIndex, y: rowIndex });
 
-						if (exploded) board.clearExplodedTiles();
+						if (exploded) board.organizedBoard();
 					}
 				"
 			/>
