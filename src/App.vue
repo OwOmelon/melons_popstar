@@ -1,9 +1,19 @@
 <script setup lang="ts">
-import Board from './components/Board.vue'
+import Board from "./components/Board.vue";
+import debug from "./components/_debug.vue";
+
+import { useGameStateStore } from "./stores/game_state";
+
+const state = useGameStateStore();
 </script>
 
 <template>
-  <Board />
+  <div>
+    <p>{{ state.points }} | {{ state.gameOver }}</p>
+    <Board />
+  </div>
+
+  <debug />
 </template>
 
 <style lang="postcss">
@@ -16,7 +26,7 @@ import Board from './components/Board.vue'
 }
 
 body {
-   @apply bg-amber-100 font-["Poppins",_sans-serrif]
+  @apply bg-amber-100 font-["Poppins",_sans-serrif];
 }
 
 #app {

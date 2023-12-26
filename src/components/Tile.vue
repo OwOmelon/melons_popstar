@@ -11,8 +11,9 @@ const emit = defineEmits<{
 <template>
 	<div
 		:class="[
-			state, color,
-			'grid aspect-square w-10 place-items-center rounded border-2 border-transparent text-xs',
+			state,
+			color,
+			'grid aspect-square w-10 place-items-center rounded border-[1px] border-transparent border-white text-xs',
 		]"
 		@click="emit('explode-tile')"
 	>

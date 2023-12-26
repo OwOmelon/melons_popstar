@@ -1,5 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
+import { useGameStateStore } from "./game_state";
 
 export type TilePosition = {
 	x: number;
@@ -15,6 +16,10 @@ export type Tile = {
 };
 
 export const useBoardStore = defineStore("board", () => {
+	const state = useGameStateStore();
+
+	// --------------------
+
 	const board = ref<Tile[][]>([]);
 
 	createBoard();
@@ -72,16 +77,23 @@ export const useBoardStore = defineStore("board", () => {
 	}
 
 	function organizedBoard(): void {
+		state.organizingBoard = true;
+
 		setTimeout(() => {
 			const organizedBoard: Tile[][] = [];
+			let pointsEarned = 5;
+			let scoreMultiplier = 0;
 
-			board.value.forEach((column, columnIndex) => {
+			board.value.forEach((column) => {
 				const organizedColumn: Tile[] = [];
 				let clearedTiles = 0;
 
 				column.forEach((tile) => {
 					if (tile.state === "EXPLODE") {
 						tile.state = "CLEARED";
+
+						pointsEarned = pointsEarned + scoreMultiplier * 10;
+						scoreMultiplier++;
 
 						organizedColumn.unshift(tile);
 					} else {
@@ -91,20 +103,37 @@ export const useBoardStore = defineStore("board", () => {
 					if (tile.state === "CLEARED") clearedTiles++;
 				});
 
-				console.log(columnIndex, clearedTiles);
-
 				if (clearedTiles !== column.length) {
 					organizedBoard.push(organizedColumn);
-				} else {
 				}
 			});
 
 			board.value = organizedBoard;
+
+			state.points = state.points + pointsEarned;
+			state.organizingBoard = false;
+			state.gameOver = checkGameOver();
 		}, 500);
 	}
 
-	function getTile(pos: TilePosition): Tile | null {
-		return board.value?.[pos.x]?.[pos.y] ?? null;
+	function checkGameOver(): boolean {
+		return board.value.every((column, columnIndex) => {
+			return column.every((tile, rowIndex) => {
+				const adjacentTiles = getLinearAdjacentPositions({
+					x: rowIndex,
+					y: columnIndex,
+				}).map((adjPos) => getTile(adjPos));
+
+				return adjacentTiles.some(
+					(adjTile) =>
+						adjTile?.state === "IDLE" && adjTile?.color === tile.color,
+				);
+			});
+		});
+	}
+
+	function getTile(pos: TilePosition): Tile | undefined {
+		return board.value?.[pos.x]?.[pos.y] ?? undefined;
 	}
 
 	function getLinearAdjacentPositions(pos: TilePosition): TilePosition[] {
@@ -116,7 +145,15 @@ export const useBoardStore = defineStore("board", () => {
 		];
 	}
 
-	// ------------------------------
+	// --------------------
 
-	return { board, createBoard, explodeTile, organizedBoard };
+	return {
+		board,
+		createBoard,
+		explodeTile,
+		organizedBoard,
+		checkGameOver,
+		getTile,
+		getLinearAdjacentPositions,
+	};
 });

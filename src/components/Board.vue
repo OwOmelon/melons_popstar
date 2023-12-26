@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useBoardStore } from "@/stores/board";
+import { useGameStateStore } from "@/stores/game_state";
 
 import Tile from "./Tile.vue";
 
 const board = useBoardStore();
+const state = useGameStateStore();
 </script>
 
 <template>
-	<div class="flex gap-1">
+	<div
+		:class="[{ 'pointer-events-none': state.organizingBoard }, 'flex gap-1']"
+	>
 		<div
 			class="flex flex-col gap-[inherit]"
 			v-for="(column, columnIndex) in board.board"
@@ -37,5 +41,14 @@ const board = useBoardStore();
 			blur
 		</button>
 		<button @click="board.createBoard">reset</button>
+		<button
+			@click="
+				() => {
+					console.log(board.checkGameOver());
+				}
+			"
+		>
+			check gameover
+		</button>
 	</div>
 </template>
