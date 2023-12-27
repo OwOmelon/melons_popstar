@@ -4,8 +4,17 @@ import type { Tile } from "@/stores/board";
 const props = defineProps<Tile>();
 
 const emit = defineEmits<{
-	"explode-tile": [];
+	"select": [];
+	"explode": [];
 }>();
+
+function onClick(): void {
+	if (props.state === "SELECTED") {
+		emit("explode");
+	} else {
+		emit("select");
+	}
+}
 </script>
 
 <template>
@@ -15,9 +24,9 @@ const emit = defineEmits<{
 			color,
 			'grid aspect-square w-10 place-items-center rounded border-[1px] border-transparent border-white text-xs',
 		]"
-		@click="emit('explode-tile')"
+		@click="onClick"
 	>
-		<p>O</p>
+		<p>{{ points }}</p>
 	</div>
 </template>
 
@@ -42,8 +51,14 @@ const emit = defineEmits<{
 	@apply bg-[#FF84A5];
 }
 
-.EXPLODE {
+/* STATES */
+
+.SELECTED {
 	@apply border-black;
+}
+
+.EXPLODING {
+	@apply border-red-600;
 }
 
 .CLEARED {

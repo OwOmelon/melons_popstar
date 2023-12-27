@@ -9,7 +9,8 @@ const state = useGameStateStore();
 
 <template>
   <div>
-    <p>{{ state.points }} | {{ state.gameOver }}</p>
+    <p>stage: {{ state.stage }} goal: {{ state.goal }}</p>
+    <p>points:{{ state.points }} {{ state.points >= state.goal ? 'o' : 'x' }}</p>
     <Board />
   </div>
 

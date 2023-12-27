@@ -10,36 +10,54 @@ export const useGameStateStore = defineStore("game-state", () => {
 	// --------------------
 
 	const points = ref<number>(0);
-	const goal = ref<number>(0);
-
-	// const state = ref<GameState>("ONGOING");
-	const gameOver = ref<boolean>(false);
+	const stage = ref<number>(1);
+	const goal = ref<number>(1000);
 
 	const organizingBoard = ref<boolean>(false);
 
-	const stateTable = ref(
-		board.board.map((column, y) => {
-			return column.map((tile, x) => {
-				const adjacenTiles = board
+	function resetState(): void {
+		points.value = 0;
+		goal.value = 0;
+		organizingBoard.value = false;
+	}
+
+	function nextStage(): void {
+		stage.value++;
+		goal.value = goal.value + (stage.value >= 3 ? 3000 : 2000);
+	}
+
+	function checkBoardFinished(): boolean {
+		return board.board.every((column, x) => {
+			const hasClearableTile = column.some((tile, y) => {
+				if (tile.state === "CLEARED") return false;
+				if (tile.state === "EXPLODING") return true;
+
+				const adjacentTiles = board
 					.getLinearAdjacentPositions({ x, y })
 					.map((adjPos) => board.getTile(adjPos));
 
-				const clearable = adjacenTiles.some(
+				const clearable = adjacentTiles.some(
 					(adjTile) =>
 						adjTile?.state === "IDLE" && adjTile?.color === tile.color,
 				);
 
-				return clearable ? tile.color : undefined;
+				return clearable;
 			});
-		}),
-	);
+
+			return !hasClearableTile;
+		});
+	}
 
 	// --------------------
 
 	return {
 		points,
+		stage,
 		goal,
-		gameOver,
+
 		organizingBoard,
+		resetState,
+		nextStage,
+		checkBoardFinished,
 	};
 });
