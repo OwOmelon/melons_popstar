@@ -1,17 +1,37 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import Board from "./components/Board.vue";
+import GetEndGameBonus from "./components/GetEndGameBonus.vue";
 import debug from "./components/_debug.vue";
 
 import { useGameStateStore } from "./stores/game_state";
 
-const state = useGameStateStore();
+const game_state = useGameStateStore();
+
+const bonus = ref<InstanceType<typeof GetEndGameBonus> | null>(null);
 </script>
 
 <template>
   <div>
-    <p>stage: {{ state.stage }} goal: {{ state.goal }}</p>
-    <p>points:{{ state.points }} {{ state.points >= state.goal ? 'o' : 'x' }}</p>
+    <p>stage: {{ game_state.stage }} goal: {{ game_state.goal }}</p>
+    <p
+      :class="[
+        { 'bg-amber-500 text-white': game_state.points >= game_state.goal },
+      ]"
+    >
+      points: {{ game_state.points }}
+    </p>
+
+    <GetEndGameBonus
+      ref="bonus"
+      v-if="game_state.showBonusComponent"
+      @bonus="game_state.checkFinalScore"
+    />
     <Board />
+
+    <button class="mx-auto block" @click="bonus?.getEndGameBonus()">
+      get bonus
+    </button>
   </div>
 
   <debug />

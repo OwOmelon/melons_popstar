@@ -14,16 +14,35 @@ export const useGameStateStore = defineStore("game-state", () => {
 	const goal = ref<number>(1000);
 
 	const organizingBoard = ref<boolean>(false);
+	const showBonusComponent = ref<boolean>(false);
 
 	function resetState(): void {
 		points.value = 0;
-		goal.value = 0;
-		organizingBoard.value = false;
+		stage.value = 1;
+		goal.value = 1000;
 	}
 
 	function nextStage(): void {
 		stage.value++;
 		goal.value = goal.value + (stage.value >= 3 ? 3000 : 2000);
+	}
+
+	function checkFinalScore(bonus: number): void {
+		points.value = points.value + bonus;
+
+		if (points.value > goal.value) {
+			alert(`stage ${stage.value} pass`);
+
+			nextStage();
+		} else {
+			alert(`stage ${stage.value} fail`);
+
+			resetState();
+		}
+
+		showBonusComponent.value = false;
+
+		board.board = board.createBoard();
 	}
 
 	function checkBoardFinished(): boolean {
@@ -56,8 +75,11 @@ export const useGameStateStore = defineStore("game-state", () => {
 		goal,
 
 		organizingBoard,
+		showBonusComponent,
+
 		resetState,
 		nextStage,
+		checkFinalScore,
 		checkBoardFinished,
 	};
 });

@@ -102,9 +102,9 @@ export const useBoardStore = defineStore("board", () => {
 	}
 
 	async function organizeBoard(): Promise<void> {
-		await new Promise((res) => setTimeout(res, 500));
-
 		game_state.organizingBoard = true;
+
+		await new Promise((res) => setTimeout(res, 500));
 
 		const organizedBoard: Tile[][] = [];
 		let totalPointsEarned = 0;

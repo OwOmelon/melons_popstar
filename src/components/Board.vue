@@ -19,19 +19,9 @@ async function onTileExplode() {
 	board.explodeSelectedTiles();
 	await board.organizeBoard();
 
-	if (!game_state.checkBoardFinished()) return;
-
-	if (game_state.points > game_state.goal) {
-		alert(`stage ${game_state.stage} pass`);
-
-		game_state.nextStage();
-	} else {
-		alert(`stage ${game_state.stage} fail`);
-
-		game_state.resetState();
+	if (game_state.checkBoardFinished()) {
+		game_state.showBonusComponent = true;
 	}
-
-	board.board = board.createBoard();
 }
 </script>
 
@@ -41,9 +31,11 @@ async function onTileExplode() {
 			{ 'pointer-events-none': game_state.organizingBoard },
 			'flex gap-1',
 		]"
-		v-on-click-outside="() => {
-			board.unselectAllTiles()
-		}"
+		v-on-click-outside="
+			() => {
+				board.unselectAllTiles();
+			}
+		"
 	>
 		<div
 			class="flex flex-col gap-[inherit]"
@@ -54,23 +46,8 @@ async function onTileExplode() {
 				v-bind="tile"
 				@select="onTileSelect({ x: columnIndex, y: rowIndex })"
 				@explode="onTileExplode"
+				@force-explode="tile.state = 'EXPLODING'"
 			/>
 		</div>
-	</div>
-	<div class="flex gap-2">
-		<button
-			@click="
-				() => {
-					board.board.forEach((column) => {
-						column.forEach((tile) => {
-							tile.state = 'IDLE';
-						});
-					});
-				}
-			"
-		>
-			blur
-		</button>
-		<button @click="board.board = board.createBoard()">reset</button>
 	</div>
 </template>

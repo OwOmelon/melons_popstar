@@ -17,26 +17,26 @@ async function getEndGameBonus(): Promise<void> {
 
 	for (let y = 0; y < 10; y++) {
 		for (let x = 0; x < board.board.length; x++) {
-			if (bonus.value <= 0) {
-				emit("bonus", bonus.value);
-
-				return;
-			}
-
 			const tile = board.getTile({ x, y })!;
 
 			if (tile.state === "IDLE") {
 				tile.state = "CLEARED";
 
-				console.log(bonus.value, subtrahend.value)
-
 				bonus.value = bonus.value - subtrahend.value;
 				subtrahend.value = subtrahend.value + 40;
 
-				await new Promise((res) => setTimeout(res, 250));
+				await new Promise((res) => setTimeout(res, 400));
+			}
+
+			if (bonus.value <= 0) {
+				emit("bonus", bonus.value);
+
+				return;
 			}
 		}
 	}
+
+	emit("bonus", bonus.value);
 }
 
 onMounted(() => {

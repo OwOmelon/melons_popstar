@@ -6,9 +6,16 @@ const props = defineProps<Tile>();
 const emit = defineEmits<{
 	"select": [];
 	"explode": [];
+	"force-explode": [];
 }>();
 
-function onClick(): void {
+function onClick(e: MouseEvent): void {
+	if (e.ctrlKey) {
+		emit('force-explode')
+
+		return
+	}
+
 	if (props.state === "SELECTED") {
 		emit("explode");
 	} else {
@@ -62,6 +69,6 @@ function onClick(): void {
 }
 
 .CLEARED {
-	@apply opacity-25;
+	@apply pointer-events-none opacity-25;
 }
 </style>
