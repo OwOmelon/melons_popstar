@@ -1,18 +1,19 @@
 import { ref, computed, onMounted } from "vue";
 import { defineStore } from "pinia";
 import { useGameStateStore } from "./game_state";
+import { clearPtsAnim } from "@/eyecandy/clear-pts-anim";
 
 export type TilePosition = {
 	x: number;
 	y: number;
 };
 
+export type TileID = `spawnx${number}y${number}`;
 export type TileState = "IDLE" | "SELECTED" | "TO_CLEAR" | "CLEARED";
 export type TileColor = "YELLOW" | "PURPLE" | "BLUE" | "GREEN" | "RED";
 
 export type Tile = {
-	readonly spawny: number;
-	readonly id: `x${number}y${number}`;
+	readonly id: TileID;
 	readonly color: TileColor;
 	state: TileState;
 	points: number;
@@ -42,8 +43,7 @@ export const useBoardStore = defineStore("board", () => {
 
 			for (let y = 0; y < 10; y++) {
 				const tile: Tile = {
-					spawny: y,
-					id: `x${x}y${y}`,
+					id: `spawnx${x}y${y}`,
 					color: tilePalette[Math.floor(Math.random() * tilePalette.length)],
 					state: "IDLE",
 					points: 0,
@@ -106,8 +106,6 @@ export const useBoardStore = defineStore("board", () => {
 	}
 
 	async function organizeBoard(): Promise<void> {
-		game_state.organizingBoard = true;
-
 		const organizedBoard: Tile[][] = [];
 		let totalPointsEarned = 0;
 
@@ -118,8 +116,9 @@ export const useBoardStore = defineStore("board", () => {
 			column.forEach((tile) => {
 				if (tile.state === "TO_CLEAR") {
 					tile.state = "CLEARED";
-					totalPointsEarned = totalPointsEarned + tile.points;
+					clearPtsAnim(tile.id, tile.points);
 
+					totalPointsEarned = totalPointsEarned + tile.points;
 					organizedColumn.unshift(tile);
 				} else {
 					organizedColumn.push(tile);
@@ -134,9 +133,7 @@ export const useBoardStore = defineStore("board", () => {
 		});
 
 		board.value = organizedBoard;
-
 		game_state.points = game_state.points + totalPointsEarned;
-		game_state.organizingBoard = false;
 
 		return;
 	}
