@@ -29,7 +29,7 @@ async function onTileExplode() {
 	<div
 		:class="[
 			{ 'pointer-events-none': game_state.organizingBoard },
-			'relative flex gap-1',
+			'relative flex gap-2 rounded bg-white/75 p-2',
 		]"
 		v-on-click-outside="
 			() => {
@@ -48,12 +48,6 @@ async function onTileExplode() {
 				@select="onTileSelect({ x: columnIndex, y: rowIndex })"
 				@explode="onTileExplode"
 				@force-select="tile.state = 'SELECTED'"
-			/>
-
-			<button
-				:key="`btn${columnIndex}`"
-				class="mx-auto rounded-full bg-black p-2"
-				@click="board.board.splice(columnIndex, 1)"
 			/>
 		</div>
 	</div>
