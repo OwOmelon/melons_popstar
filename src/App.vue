@@ -7,8 +7,6 @@ import debug from "./components/_debug.vue";
 import { useGameStateStore } from "./stores/game_state";
 
 const game_state = useGameStateStore();
-
-const bonus = ref<InstanceType<typeof GetEndGameBonus> | null>(null);
 </script>
 
 <template>
@@ -27,11 +25,8 @@ const bonus = ref<InstanceType<typeof GetEndGameBonus> | null>(null);
       v-if="game_state.showBonusComponent"
       @bonus="game_state.checkFinalScore"
     />
-    <Board />
 
-    <button class="mx-auto block" @click="bonus?.getEndGameBonus()">
-      get bonus
-    </button>
+    <Board />
   </div>
 
   <debug />
@@ -52,5 +47,21 @@ body {
 
 #app {
   @apply flex min-h-screen flex-col items-center justify-center;
+}
+
+.pts-anim {
+  animation: pts-anim 800ms ease forwards;
+}
+
+@keyframes pts-anim {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }
 </style>
