@@ -7,10 +7,12 @@ export type TilePosition = {
 	y: number;
 };
 
-export type TileState = "IDLE" | "SELECTED" | "EXPLODING" | "CLEARED";
+export type TileState = "IDLE" | "SELECTED" | "TO_CLEAR" | "CLEARED";
 export type TileColor = "YELLOW" | "PURPLE" | "BLUE" | "GREEN" | "RED";
 
 export type Tile = {
+	readonly spawny: number;
+	readonly id: `x${number}y${number}`;
 	readonly color: TileColor;
 	state: TileState;
 	points: number;
@@ -40,6 +42,8 @@ export const useBoardStore = defineStore("board", () => {
 
 			for (let y = 0; y < 10; y++) {
 				const tile: Tile = {
+					spawny: y,
+					id: `x${x}y${y}`,
 					color: tilePalette[Math.floor(Math.random() * tilePalette.length)],
 					state: "IDLE",
 					points: 0,
@@ -92,7 +96,7 @@ export const useBoardStore = defineStore("board", () => {
 		board.value.forEach((column) => {
 			column.forEach((tile) => {
 				if (tile.state === "SELECTED") {
-					tile.state = "EXPLODING";
+					tile.state = "TO_CLEAR";
 					tile.points = pointsEarned;
 
 					pointsEarned = pointsEarned + 10;
@@ -104,8 +108,6 @@ export const useBoardStore = defineStore("board", () => {
 	async function organizeBoard(): Promise<void> {
 		game_state.organizingBoard = true;
 
-		await new Promise((res) => setTimeout(res, 500));
-
 		const organizedBoard: Tile[][] = [];
 		let totalPointsEarned = 0;
 
@@ -114,7 +116,7 @@ export const useBoardStore = defineStore("board", () => {
 			let clearedTiles = 0;
 
 			column.forEach((tile) => {
-				if (tile.state === "EXPLODING") {
+				if (tile.state === "TO_CLEAR") {
 					tile.state = "CLEARED";
 					totalPointsEarned = totalPointsEarned + tile.points;
 

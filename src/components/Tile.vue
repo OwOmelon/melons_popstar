@@ -4,16 +4,16 @@ import type { Tile } from "@/stores/board";
 const props = defineProps<Tile>();
 
 const emit = defineEmits<{
-	"select": [];
-	"explode": [];
-	"force-explode": [];
+	select: [];
+	explode: [];
+	"force-select": [];
 }>();
 
 function onClick(e: MouseEvent): void {
 	if (e.ctrlKey) {
-		emit('force-explode')
+		emit("force-select");
 
-		return
+		return;
 	}
 
 	if (props.state === "SELECTED") {
@@ -70,5 +70,23 @@ function onClick(e: MouseEvent): void {
 
 .CLEARED {
 	@apply pointer-events-none opacity-25;
+}
+
+/* MISC */
+
+.pts-anim {
+	animation: pts-anim 500ms linear forwards;
+}
+
+@keyframes pts-anim {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	to {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
 }
 </style>

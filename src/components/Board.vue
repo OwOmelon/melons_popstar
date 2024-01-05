@@ -29,7 +29,7 @@ async function onTileExplode() {
 	<div
 		:class="[
 			{ 'pointer-events-none': game_state.organizingBoard },
-			'flex gap-1',
+			'relative flex gap-1',
 		]"
 		v-on-click-outside="
 			() => {
@@ -38,16 +38,60 @@ async function onTileExplode() {
 		"
 	>
 		<div
-			class="flex flex-col gap-[inherit]"
 			v-for="(column, columnIndex) in board.board"
+			class="relative flex flex-col gap-[inherit]"
 		>
 			<Tile
 				v-for="(tile, rowIndex) in column"
 				v-bind="tile"
+				:key="tile.id"
 				@select="onTileSelect({ x: columnIndex, y: rowIndex })"
 				@explode="onTileExplode"
-				@force-explode="tile.state = 'EXPLODING'"
+				@force-select="tile.state = 'SELECTED'"
+			/>
+
+			<button
+				:key="`btn${columnIndex}`"
+				class="mx-auto rounded-full bg-black p-2"
+				@click="board.board.splice(columnIndex, 1)"
 			/>
 		</div>
 	</div>
 </template>
+
+<style scoped lang="scss">
+.board {
+	&-move,
+	&-enter-active,
+	&-leave-active {
+		transition: all 300ms cubic-bezier(0.5, 0.05, 0.8, 1);
+	}
+
+	&-enter-from,
+	&-leave-to {
+		opacity: 0;
+		width: 0;
+	}
+
+	&-leave-active {
+		position: absolute;
+	}
+}
+
+.column {
+	&-move,
+	&-enter-active,
+	&-leave-active {
+		transition: all 300ms cubic-bezier(0.5, 0.05, 0.8, 1);
+	}
+
+	&-enter-from,
+	&-leave-to {
+		opacity: 0;
+	}
+
+	&-leave-active {
+		position: absolute;
+	}
+}
+</style>

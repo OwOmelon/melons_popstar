@@ -49,7 +49,6 @@ export const useGameStateStore = defineStore("game-state", () => {
 		return board.board.every((column, x) => {
 			const hasClearableTile = column.some((tile, y) => {
 				if (tile.state === "CLEARED") return false;
-				if (tile.state === "EXPLODING") return true;
 
 				const adjacentTiles = board
 					.getLinearAdjacentPositions({ x, y })
