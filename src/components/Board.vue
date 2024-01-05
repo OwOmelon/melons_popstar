@@ -27,10 +27,7 @@ async function onTileExplode() {
 
 <template>
 	<div
-		:class="[
-			{ 'pointer-events-none': game_state.organizingBoard },
-			'relative flex gap-2 rounded bg-white/75 p-2',
-		]"
+		class="relative flex gap-2 rounded bg-white/75 p-2"
 		v-on-click-outside="
 			() => {
 				board.unselectAllTiles();

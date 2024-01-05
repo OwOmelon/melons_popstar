@@ -13,7 +13,6 @@ export const useGameStateStore = defineStore("game-state", () => {
 	const stage = ref<number>(1);
 	const goal = ref<number>(1000);
 
-	const organizingBoard = ref<boolean>(false);
 	const showBonusComponent = ref<boolean>(false);
 
 	function resetState(): void {
@@ -73,7 +72,6 @@ export const useGameStateStore = defineStore("game-state", () => {
 		stage,
 		goal,
 
-		organizingBoard,
 		showBonusComponent,
 
 		resetState,
