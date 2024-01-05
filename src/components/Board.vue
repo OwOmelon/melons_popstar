@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useBoardStore } from "@/stores/board";
 import { useGameStateStore } from "@/stores/game_state";
@@ -9,6 +10,8 @@ import Tile from "./Tile.vue";
 
 const board = useBoardStore();
 const game_state = useGameStateStore();
+
+const boardEl = ref<HTMLElement | null>(null);
 
 function onTileSelect(pos: TilePosition) {
 	board.unselectAllTiles();
@@ -22,11 +25,22 @@ async function onTileExplode() {
 	if (game_state.checkBoardFinished()) {
 		game_state.showBonusComponent = true;
 	}
+
+	shakeBoard();
+}
+
+function shakeBoard(): void {
+	boardEl.value!.classList.add("board-shake-subtle");
+
+	setTimeout(() => {
+		boardEl.value!.classList.remove("board-shake-subtle");
+	}, 100);
 }
 </script>
 
 <template>
 	<div
+		ref="boardEl"
 		class="relative flex gap-2 rounded bg-white/75 p-2"
 		v-on-click-outside="
 			() => {
@@ -47,42 +61,47 @@ async function onTileExplode() {
 				@force-select="tile.state = 'SELECTED'"
 			/>
 		</div>
+
+		<div
+			id="clear-row-flash-board"
+			:style="{
+				gridTemplateRows: `repeat(${board.board[0].length}, minmax(0, 1fr))`,
+			}"
+			class="pointer-events-none absolute left-0 top-0 grid h-full w-full grid-cols-1 gap-[inherit] py-2"
+		>
+			<!-- <div :style="{ gridRowStart: 10 }" class="clear-row-flash" /> -->
+		</div>
 	</div>
 </template>
 
-<style scoped lang="scss">
-.board {
-	&-move,
-	&-enter-active,
-	&-leave-active {
-		transition: all 300ms cubic-bezier(0.5, 0.05, 0.8, 1);
-	}
-
-	&-enter-from,
-	&-leave-to {
-		opacity: 0;
-		width: 0;
-	}
-
-	&-leave-active {
-		position: absolute;
-	}
+<style scoped>
+.board-shake-subtle {
+	animation: shake 100ms;
 }
 
-.column {
-	&-move,
-	&-enter-active,
-	&-leave-active {
-		transition: all 300ms cubic-bezier(0.5, 0.05, 0.8, 1);
+@keyframes shake {
+	0% {
+		transform: translateX(2px) translateY(-2px);
 	}
 
-	&-enter-from,
-	&-leave-to {
-		opacity: 0;
+	20% {
+		transform: translateX(-2px) translateY(-2px);
 	}
 
-	&-leave-active {
-		position: absolute;
+	40% {
+		transform: translateX(1px) translateY(1px);
+	}
+
+	60% {
+		transform: translateX(-1px) translateY(1px);
+	}
+
+	80% {
+		transform: translateX(3px) translateY(-3px);
+	}
+
+	100% {
+		transform: translateX(-3px) translateY(-3px);
 	}
 }
 </style>

@@ -2,6 +2,7 @@ import { ref, computed, onMounted } from "vue";
 import { defineStore } from "pinia";
 import { useGameStateStore } from "./game_state";
 import { clearPtsAnim } from "@/eyecandy/clear-pts-anim";
+import { clearRowFlash } from "@/eyecandy/clear-row-flash";
 
 export type TilePosition = {
 	x: number;
@@ -107,19 +108,25 @@ export const useBoardStore = defineStore("board", () => {
 
 	async function organizeBoard(): Promise<void> {
 		const organizedBoard: Tile[][] = [];
+
 		let totalPointsEarned = 0;
+		const rowIndecesCleared: number[] = [];
 
 		board.value.forEach((column) => {
 			const organizedColumn: Tile[] = [];
 			let clearedTiles = 0;
 
-			column.forEach((tile) => {
+			column.forEach((tile, rowIndex) => {
 				if (tile.state === "TO_CLEAR") {
 					tile.state = "CLEARED";
 					clearPtsAnim(tile.id, tile.points);
 
 					totalPointsEarned = totalPointsEarned + tile.points;
 					organizedColumn.unshift(tile);
+
+					if (!rowIndecesCleared.includes(rowIndex)) {
+						rowIndecesCleared.push(rowIndex);
+					}
 				} else {
 					organizedColumn.push(tile);
 				}
@@ -131,6 +138,8 @@ export const useBoardStore = defineStore("board", () => {
 				organizedBoard.push(organizedColumn);
 			}
 		});
+
+		clearRowFlash(rowIndecesCleared)
 
 		board.value = organizedBoard;
 		game_state.points = game_state.points + totalPointsEarned;

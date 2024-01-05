@@ -64,4 +64,32 @@ body {
     transform: translateY(-20px);
   }
 }
+
+.clear-row-flash {
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 1) 45%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(255, 255, 255, 1) 55%,
+    rgba(255, 255, 255, 1) 1000%
+  );
+     
+    background-position: center;
+  background-repeat: no-repeat;
+
+  animation: clear-row-flash 1s linear forwards;
+}
+
+@keyframes clear-row-flash {
+  from {
+     background-size: 100% 100%;
+
+  }
+
+  to {
+     background-size: 20000% 100%;
+
+  }
+}
 </style>
