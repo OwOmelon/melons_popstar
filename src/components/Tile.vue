@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import IconStar from "~icons/material-symbols-light/kid-star";
+
 import type { Tile } from "@/stores/board";
 
 const props = defineProps<Tile>();
@@ -25,15 +27,19 @@ function onClick(e: MouseEvent): void {
 </script>
 
 <template>
-	<div
-		:class="[
-			state,
-			color,
-			'grid aspect-square w-10 place-items-center rounded border-[1px] border-transparent border-white text-xs',
-		]"
-		@click="onClick"
-	>
-		<p>{{ points }}</p>
+	<div class="relative">
+		<div
+			ref="tile"
+			:id="id"
+			:class="[
+				state,
+				color,
+				'relative grid aspect-square w-10 place-items-center rounded border-[1px] border-transparent text-xs shadow-[0_0_3px] shadow-black/50 duration-150',
+			]"
+			@click="onClick"
+		>
+			<IconStar class="absolute h-8 w-8 text-white" />
+		</div>
 	</div>
 </template>
 
@@ -61,7 +67,7 @@ function onClick(e: MouseEvent): void {
 /* STATES */
 
 .SELECTED {
-	@apply border-black;
+	@apply scale-[1.1] border-white brightness-125;
 }
 
 .EXPLODING {
@@ -70,23 +76,5 @@ function onClick(e: MouseEvent): void {
 
 .CLEARED {
 	@apply pointer-events-none opacity-25;
-}
-
-/* MISC */
-
-.pts-anim {
-	animation: pts-anim 500ms linear forwards;
-}
-
-@keyframes pts-anim {
-	from {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	to {
-		opacity: 0;
-		transform: translateY(-20px);
-	}
 }
 </style>
