@@ -1,19 +1,33 @@
-export function clearRowFlash(rowIndeces: number[]): void {
-	const clearRowFlashBoardEl = document.getElementById(
-		"clear-row-flash-board",
-	)!;
+// DISPLAY A HORIZONTAL FLASH ON THE ROW IN WHICH A TILE WAS CLEARED
 
-	rowIndeces.forEach((rowIndex) => {
-		const flash = document.createElement("div");
+import type { TileID } from "../stores/board";
 
-		flash.style.gridRowStart = (rowIndex + 1).toString();
-		flash.classList.add("clear-row-flash");
+const rowFlashes: number[] = [];
 
-		clearRowFlashBoardEl.append(flash);
+export function clearRowFlash(id: TileID) {
+	const row = +id[id.length - 1];
+	const rowFlashIndex = rowFlashes.indexOf(row);
 
-		// REMOVE FLASH IN 100MS AFTER ITS ANIMATION FINISHES
-		setTimeout(() => {
-			flash.remove();
-		}, 1000 + 100);
-	});
+	if (rowFlashIndex !== -1) return;
+
+	const app = document.getElementById('app')!
+	const boardElRect = document.getElementById("board")!.getBoundingClientRect();
+	const tileElRect = document.getElementById(id)!.getBoundingClientRect();
+	const flash = document.createElement("div");
+
+	flash.classList.add("clear-row-flash", "pointer-events-none", "fixed");
+
+	flash.style.left = `${boardElRect.left}px`;
+	flash.style.top = `${tileElRect.top}px`;
+	flash.style.width = `${boardElRect.width}px`;
+	flash.style.height = `${tileElRect.height}px`;
+
+	rowFlashes.push(row);
+
+	app.append(flash);
+
+	setTimeout(() => {
+		flash.remove();
+		rowFlashes.splice(rowFlashIndex, 1);
+	}, 200);
 }

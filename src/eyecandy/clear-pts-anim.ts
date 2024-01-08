@@ -1,40 +1,36 @@
-// DISPLAY THE NUMBER OF POINTS WHEN CLEARING A TILE ON SAID TILE
+// DISPLAY THE NUMBER OF POINTS OVER A TILE WHEN IT IS CLEARED
 
-import type { TileID } from '@/stores/board'
+import type { TileID } from "../stores/board";
 
 export function clearPtsAnim(id: TileID, points: number): void {
-		const tileEl = document.getElementById(id);
+	const app = document.getElementById('app')!
+	const tileElRect = document.getElementById(id)!.getBoundingClientRect();
+	const ptsAnim = document.createElement("div");
+	const ptsAnimText = document.createElement("p");
 
-		if (!tileEl) return;
+	ptsAnimText.innerText = points.toString();
 
-		const tileElRect = tileEl.getBoundingClientRect();
-		const ptsAnim = document.createElement("div");
-		const ptsAnimText = document.createElement("p");
+	ptsAnim.style.left = `${tileElRect.left}px`;
+	ptsAnim.style.top = `${tileElRect.top}px`;
+	ptsAnim.style.width = `${tileElRect.width}px`;
+	ptsAnim.style.height = `${tileElRect.height}px`;
 
-		ptsAnimText.innerText = points.toString();
+	ptsAnim.classList.add(
+		"pts-anim",
+		"pointer-events-none",
+		"absolute",
+		"grid",
+		"place-items-center",
+		"text-center",
+		"text-xl",
+		"font-bold",
+	);
 
-		ptsAnim.style.left = `${tileElRect.left}px`;
-		ptsAnim.style.top = `${tileElRect.top}px`;
-		ptsAnim.style.width = `${tileElRect.width}px`;
-		ptsAnim.style.height = `${tileElRect.height}px`;
+	ptsAnim.appendChild(ptsAnimText);
 
-		ptsAnim.setAttribute("id", `pts-anim${id}`);
-		ptsAnim.classList.add(
-			"pts-anim",
-			"pointer-events-none",
-			"absolute",
-			"grid",
-			"place-items-center",
-			"text-center",
-			"text-xl",
-			"font-bold",
-		);
+	app.appendChild(ptsAnim);
 
-		ptsAnim.appendChild(ptsAnimText)
-		document.body.appendChild(ptsAnim);
-
-		// REMOVE ELEMENT IN 200MS AFTER ANIMATION (pts-anim) FINISHES
-		setTimeout(() => {
-			ptsAnim.remove();
-		}, 1000);
-	}
+	setTimeout(() => {
+		ptsAnim.remove();
+	}, 1000);
+}

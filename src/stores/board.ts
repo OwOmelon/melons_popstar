@@ -110,7 +110,6 @@ export const useBoardStore = defineStore("board", () => {
 		const organizedBoard: Tile[][] = [];
 
 		let totalPointsEarned = 0;
-		const rowIndecesCleared: number[] = [];
 
 		board.value.forEach((column) => {
 			const organizedColumn: Tile[] = [];
@@ -119,14 +118,12 @@ export const useBoardStore = defineStore("board", () => {
 			column.forEach((tile, rowIndex) => {
 				if (tile.state === "TO_CLEAR") {
 					tile.state = "CLEARED";
-					clearPtsAnim(tile.id, tile.points);
 
 					totalPointsEarned = totalPointsEarned + tile.points;
 					organizedColumn.unshift(tile);
 
-					if (!rowIndecesCleared.includes(rowIndex)) {
-						rowIndecesCleared.push(rowIndex);
-					}
+					clearPtsAnim(tile.id, tile.points);
+					clearRowFlash(tile.id);
 				} else {
 					organizedColumn.push(tile);
 				}
@@ -138,8 +135,6 @@ export const useBoardStore = defineStore("board", () => {
 				organizedBoard.push(organizedColumn);
 			}
 		});
-
-		clearRowFlash(rowIndecesCleared)
 
 		board.value = organizedBoard;
 		game_state.points = game_state.points + totalPointsEarned;

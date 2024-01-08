@@ -41,6 +41,7 @@ function shakeBoard(): void {
 <template>
 	<div
 		ref="boardEl"
+		id="board"
 		class="relative flex gap-2 rounded bg-white/75 p-2"
 		v-on-click-outside="
 			() => {
@@ -60,16 +61,6 @@ function shakeBoard(): void {
 				@explode="onTileExplode"
 				@force-select="tile.state = 'SELECTED'"
 			/>
-		</div>
-
-		<div
-			id="clear-row-flash-board"
-			:style="{
-				gridTemplateRows: `repeat(${board.board[0].length}, minmax(0, 1fr))`,
-			}"
-			class="pointer-events-none absolute left-0 top-0 grid h-full w-full grid-cols-1 gap-[inherit] py-2"
-		>
-			<!-- <div :style="{ gridRowStart: 10 }" class="clear-row-flash" /> -->
 		</div>
 	</div>
 </template>
