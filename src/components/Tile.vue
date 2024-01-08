@@ -75,6 +75,6 @@ function onClick(e: MouseEvent): void {
 }
 
 .CLEARED {
-	@apply pointer-events-none opacity-25;
+	@apply pointer-events-none opacity-0;
 }
 </style>
