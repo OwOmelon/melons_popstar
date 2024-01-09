@@ -6,20 +6,19 @@ const game_state = useGameStateStore();
 </script>
 
 <template>
-	<div class="font-bold">
-		<div class="flex justify-evenly">
-			<span>stage: {{ game_state.stage }}</span>
-			<span>goal: {{ game_state.goal }}</span>
-		</div>
+	<div class="relative flex justify-between px-5 font-bold">
+		<span>stage: {{ game_state.stage }}</span>
 
-		<p
+		<span
 			:class="[
-				{ 'bg-amber-500 text-white': game_state.points >= game_state.goal },
-				'mx-auto mt-3 w-fit rounded px-4 py-2 text-center text-4xl',
+				{ 'bg-amber-500/ text-white/': game_state.points >= game_state.goal },
+				'absolute left-1/2 top-1/2 mx-auto w-fit -translate-x-1/2 -translate-y-1/2 rounded px-4 py-2 text-center text-4xl',
 			]"
 		>
 			{{ game_state.points }}
-		</p>
+		</span>
+
+		<span>goal: {{ game_state.goal }}</span>
 
 		<GetEndGameBonus
 			ref="bonus"
