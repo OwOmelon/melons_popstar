@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useGameStateStore } from "@/stores/game_state";
-import GetEndGameBonus from "./GetEndGameBonus.vue";
 
 const game_state = useGameStateStore();
 </script>
@@ -19,11 +18,5 @@ const game_state = useGameStateStore();
 		</span>
 
 		<span>goal: {{ game_state.goal }}</span>
-
-		<GetEndGameBonus
-			ref="bonus"
-			v-if="game_state.showBonusComponent"
-			@bonus="game_state.checkFinalScore"
-		/>
 	</div>
 </template>
