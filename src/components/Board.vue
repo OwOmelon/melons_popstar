@@ -20,7 +20,7 @@ const boardElGap = computed<string>(() => {
 });
 
 function onTileSelect(pos: TilePosition) {
-	board.unselectAllTiles();
+	board.deselectAllTiles();
 	board.selectTiles(pos);
 }
 
@@ -52,7 +52,7 @@ function shakeBoard(): void {
 		class="relative flex w-[500px] max-w-[100vw] items-center justify-center gap-2 rounded bg-white/75 p-2"
 		v-on-click-outside="
 			() => {
-				board.unselectAllTiles();
+				board.deselectAllTiles();
 			}
 		"
 	>

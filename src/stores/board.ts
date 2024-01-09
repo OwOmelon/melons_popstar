@@ -81,7 +81,7 @@ export const useBoardStore = defineStore("board", () => {
 		});
 	}
 
-	function unselectAllTiles(): void {
+	function deselectAllTiles(): void {
 		board.value.forEach((column) => {
 			column.forEach((tile) => {
 				if (tile.state === "SELECTED") {
@@ -160,7 +160,7 @@ export const useBoardStore = defineStore("board", () => {
 	return {
 		board,
 		createBoard,
-		unselectAllTiles,
+		deselectAllTiles,
 		selectTiles,
 		explodeSelectedTiles,
 		organizeBoard,
