@@ -27,7 +27,7 @@ function onClick(e: MouseEvent): void {
 </script>
 
 <template>
-	<button
+	<div
 		:id="id"
 		:class="[
 			state,
@@ -36,8 +36,8 @@ function onClick(e: MouseEvent): void {
 		]"
 		@click="onClick"
 	>
-		<IconStar class="absolute h-full w-full text-white" />
-	</button>
+		<IconStar class="absolute h-full w-full text-white drop-shadow-[0_0_3px_rgba(0,0,0,0.2)]" />
+	</div>
 </template>
 
 <style scoped lang="postcss">
@@ -72,6 +72,6 @@ function onClick(e: MouseEvent): void {
 }
 
 .CLEARED {
-	@apply pointer-events-none opacity-0;
+	@apply opacity-0;
 }
 </style>
