@@ -55,6 +55,7 @@ function shakeBoard(): void {
 				board.deselectAllTiles();
 			}
 		"
+		@click.self="board.deselectAllTiles()"
 	>
 		<div
 			v-for="(column, columnIndex) in board.board"
