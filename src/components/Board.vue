@@ -42,7 +42,7 @@ function shakeBoard(): void {
 	<div
 		ref="boardEl"
 		id="board"
-		class="relative flex gap-2 rounded bg-white/75 p-2"
+		class="relative flex gap-2 rounded bg-white/75 p-2 w-[500px] max-w-[100vw] items-center justify-center"
 		v-on-click-outside="
 			() => {
 				board.unselectAllTiles();
@@ -51,7 +51,7 @@ function shakeBoard(): void {
 	>
 		<div
 			v-for="(column, columnIndex) in board.board"
-			class="relative flex flex-col gap-[inherit]"
+			class="relative flex flex-col gap-[inherit] w-[calc(10%_-_0.5rem)]"
 		>
 			<Tile
 				v-for="(tile, rowIndex) in column"

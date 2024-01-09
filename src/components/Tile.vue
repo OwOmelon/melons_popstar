@@ -27,20 +27,17 @@ function onClick(e: MouseEvent): void {
 </script>
 
 <template>
-	<div class="relative">
-		<div
-			ref="tile"
-			:id="id"
-			:class="[
-				state,
-				color,
-				'relative grid aspect-square w-10 place-items-center rounded border-[1px] border-transparent text-xs shadow-[0_0_3px] shadow-black/50 duration-150',
-			]"
-			@click="onClick"
-		>
-			<IconStar class="absolute h-8 w-8 text-white" />
-		</div>
-	</div>
+	<button
+		:id="id"
+		:class="[
+			state,
+			color,
+			'relative grid aspect-square place-items-center rounded border-[1px] border-transparent shadow-[0_0_3px] shadow-black/50',
+		]"
+		@click="onClick"
+	>
+		<IconStar class="absolute h-full w-full text-white" />
+	</button>
 </template>
 
 <style scoped lang="postcss">
