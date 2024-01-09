@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useElementSize } from "@vueuse/core";
 import { vOnClickOutside } from "@vueuse/components";
 import { useBoardStore } from "@/stores/board";
 import { useGameStateStore } from "@/stores/game_state";
@@ -12,6 +13,11 @@ const board = useBoardStore();
 const game_state = useGameStateStore();
 
 const boardEl = ref<HTMLElement | null>(null);
+const { width } = useElementSize(boardEl);
+
+const boardElGap = computed<string>(() => {
+	return `${width.value / 80}px`;
+});
 
 function onTileSelect(pos: TilePosition) {
 	board.unselectAllTiles();
@@ -42,7 +48,8 @@ function shakeBoard(): void {
 	<div
 		ref="boardEl"
 		id="board"
-		class="relative flex gap-2 rounded bg-white/75 p-2 w-[500px] max-w-[100vw] items-center justify-center"
+		:style="{ gap: boardElGap }"
+		class="relative flex w-[500px] max-w-[100vw] items-center justify-center gap-2 rounded bg-white/75 p-2"
 		v-on-click-outside="
 			() => {
 				board.unselectAllTiles();
@@ -51,7 +58,8 @@ function shakeBoard(): void {
 	>
 		<div
 			v-for="(column, columnIndex) in board.board"
-			class="relative flex flex-col gap-[inherit] w-[calc(10%_-_0.5rem)]"
+			:style="{ width: `calc(10% - ${boardElGap})` }"
+			class="relative flex flex-col gap-[inherit]"
 		>
 			<Tile
 				v-for="(tile, rowIndex) in column"
