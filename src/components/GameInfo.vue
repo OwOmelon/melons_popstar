@@ -1,7 +1,19 @@
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import { useGameStateStore } from "@/stores/game_state";
 
 const game_state = useGameStateStore();
+
+const key = ref<number>(0)
+const pointsGained = ref<number>(0);
+
+watch(
+	() => game_state.points,
+	(newPts, oldPts) => {
+		key.value++
+		pointsGained.value = newPts - oldPts;
+	},
+);
 </script>
 
 <template>
@@ -18,5 +30,35 @@ const game_state = useGameStateStore();
 		</span>
 
 		<span>goal: {{ game_state.goal }}</span>
+
+		<div
+			class="absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-[calc(50%_-_2rem)] place-items-center"
+		>
+			<span :key="key" class="jump absolute whitespace-nowrap text-xl">
+				+ {{ pointsGained }}
+			</span>
+		</div>
 	</div>
 </template>
+
+<style scoped>
+.jump {
+	animation: jump 1s ease forwards;
+}
+
+@keyframes jump {
+	0%,
+	50% {
+		transform: translateY(0);
+	}
+
+	25% {
+		transform: translateY(-0.5rem);
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+</style>
