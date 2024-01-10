@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useBoardStore } from "@/stores/board";
+import { delay } from "@/composables/delay";
 
 const emit = defineEmits<{
 	bonus: [number];
@@ -12,8 +13,7 @@ const bonus = ref<number>(2000);
 const subtrahend = ref<number>(20);
 
 async function getEndGameBonus(): Promise<void> {
-	const seq1 = [2000, 1980, 1920, 1820, 1680, 1500, 1280, 1020, 720, 380];
-	const seq1diff = [20, 60, 100, 140, 180, 220, 260, 300, 340];
+	const delayAmount = 500;
 
 	for (let y = 0; y < 10; y++) {
 		for (let x = 0; x < board.board.length; x++) {
@@ -22,28 +22,26 @@ async function getEndGameBonus(): Promise<void> {
 			if (tile.state === "IDLE") {
 				tile.state = "CLEARED";
 
-				bonus.value = bonus.value - subtrahend.value;
-				subtrahend.value = subtrahend.value + 40;
+				if (bonus.value > 0) {
+					bonus.value = bonus.value - subtrahend.value;
+					subtrahend.value = subtrahend.value + 40;
 
-				await new Promise((res) => setTimeout(res, 400));
-			}
-
-			if (bonus.value <= 0) {
-				emit("bonus", bonus.value);
-
-				return;
+					await delay(delayAmount);
+				}
 			}
 		}
 	}
 
-	emit("bonus", bonus.value);
+	await delay(delayAmount);
+
+	emit("bonus", bonus.value > 0 ? bonus.value : 0);
 }
 
-onMounted(() => {
+onMounted(async () => {
+	await delay(1000);
+
 	getEndGameBonus();
 });
-
-defineExpose({ getEndGameBonus });
 </script>
 
 <template>
