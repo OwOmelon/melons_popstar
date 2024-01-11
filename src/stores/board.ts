@@ -142,8 +142,8 @@ export const useBoardStore = defineStore("board", () => {
 		return;
 	}
 
-	function getTile(pos: TilePosition): Tile | undefined {
-		return board.value?.[pos.x]?.[pos.y] ?? undefined;
+	function getTile(pos: TilePosition): Tile | null {
+		return board.value?.[pos.x]?.[pos.y] ?? null;
 	}
 
 	function getLinearAdjacentPositions(pos: TilePosition): TilePosition[] {
