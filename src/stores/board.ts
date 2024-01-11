@@ -91,7 +91,7 @@ export const useBoardStore = defineStore("board", () => {
 		});
 	}
 
-	function explodeSelectedTiles(): void {
+	function clearSelectedTiles(): void {
 		let pointsEarned = 5;
 
 		board.value.forEach((column) => {
@@ -162,7 +162,7 @@ export const useBoardStore = defineStore("board", () => {
 		createBoard,
 		deselectAllTiles,
 		selectTiles,
-		explodeSelectedTiles,
+		clearSelectedTiles,
 		organizeBoard,
 		getTile,
 		getLinearAdjacentPositions,
