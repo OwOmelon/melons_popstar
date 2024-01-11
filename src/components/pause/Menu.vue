@@ -12,7 +12,7 @@ const emit = defineEmits<{
 
 <template>
 	<div
-		class="modal-shadow max-w-[500px]"
+		class="modal modal-shadow max-w-[500px]"
 		v-on-click-outside="
 			() => {
 				emit('close');
