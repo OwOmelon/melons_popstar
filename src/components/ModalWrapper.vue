@@ -9,7 +9,7 @@ const props = defineProps<{
 		<Transition name="nested-fade-slide-down">
 			<div
 				v-if="props.show"
-				class="component fixed left-0 top-0 z-50 grid h-screen w-screen place-items-center overflow-auto bg-black/50 p-5 backdrop-blur-sm"
+				class="fixed left-0 top-0 z-50 grid h-screen w-screen place-items-center overflow-auto bg-black/50 p-5 backdrop-blur-sm"
 			>
 				<slot></slot>
 			</div>
@@ -17,7 +17,7 @@ const props = defineProps<{
 	</Teleport>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .nested-fade-slide-down {
 	&-enter-active,
 	&-leave-active {
