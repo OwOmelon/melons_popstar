@@ -1,6 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useBoardStore } from "./board";
+import { delay } from "../composables/delay";
 
 export type GameState = "ONGOING" | "WIN" | "LOSE";
 
@@ -9,11 +10,14 @@ export const useGameStateStore = defineStore("game-state", () => {
 
 	// --------------------
 
+	const paused = ref<boolean>(false);
+	const gameover = ref<boolean>(false);
+
 	const points = ref<number>(0);
 	const stage = ref<number>(1);
 	const goal = ref<number>(1000);
 
-	const showBonusComponent = ref<boolean>(false);
+	const endGameBonus = ref<number | null>(null);
 
 	function resetState(): void {
 		points.value = 0;
@@ -26,22 +30,56 @@ export const useGameStateStore = defineStore("game-state", () => {
 		goal.value = goal.value + (stage.value >= 3 ? 3000 : 2000);
 	}
 
-	function checkFinalScore(bonus: number): void {
-		points.value = points.value + bonus;
+	function addEndGameBonus(): void {
+		points.value = points.value + (endGameBonus.value || 0);
+		resetEndGameBonus();
+	}
 
-		if (points.value > goal.value) {
-			alert(`stage ${stage.value} pass`);
+	function resetEndGameBonus(): void {
+		endGameBonus.value = 2000;
+	}
 
-			nextStage();
-		} else {
-			alert(`stage ${stage.value} fail`);
+	async function getEndGameBonus(): Promise<void> {
+		if (!endGameBonus.value) return;
 
-			resetState();
+		const delayAmount = 400;
+		let subtrahend = 20;
+
+		for (let y = 0; y < 10; y++) {
+			for (let x = 0; x < board.board.length; x++) {
+				if (endGameBonus.value <= 0) return;
+
+				const tile = board.getTile({ x, y })!;
+
+				if (tile.state === "IDLE") {
+					tile.state = "CLEARED";
+
+					endGameBonus.value = endGameBonus.value - subtrahend;
+					subtrahend = subtrahend + 40;
+
+					await delay(delayAmount);
+				}
+			}
 		}
 
-		showBonusComponent.value = false;
+		return;
+	}
+
+	async function newBoardTransition(): Promise<void> {
+		const boardEl = document.getElementById("board")!;
+		const boardAnimationDuration = 3000;
+
+		boardEl.classList.add("board-leave");
+
+		await delay(boardAnimationDuration);
 
 		board.board = board.createBoard();
+		boardEl.classList.remove("board-leave");
+		boardEl.classList.add("board-enter");
+
+		await delay(boardAnimationDuration);
+
+		boardEl.classList.remove("board-enter");
 	}
 
 	function checkBoardFinished(): boolean {
@@ -68,15 +106,21 @@ export const useGameStateStore = defineStore("game-state", () => {
 	// --------------------
 
 	return {
+		paused,
+		gameover,
+
 		points,
 		stage,
 		goal,
 
-		showBonusComponent,
+		endGameBonus,
 
 		resetState,
 		nextStage,
-		checkFinalScore,
+		addEndGameBonus,
+		resetEndGameBonus,
+		getEndGameBonus,
+		newBoardTransition,
 		checkBoardFinished,
 	};
 });
