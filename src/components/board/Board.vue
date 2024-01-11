@@ -4,6 +4,7 @@ import { useElementSize } from "@vueuse/core";
 import { vOnClickOutside } from "@vueuse/components";
 import { useBoardStore } from "@/stores/board";
 import { useGameStateStore } from "@/stores/game_state";
+import { delay } from "@/composables/delay";
 
 import type { TilePosition } from "@/stores/board";
 
@@ -19,20 +20,22 @@ const boardElGap = computed<string>(() => {
 	return `${width.value / 80}px`;
 });
 
-function onTileSelect(pos: TilePosition) {
+// ----------
+
+function selectTile(pos: TilePosition) {
 	board.deselectAllTiles();
 	board.selectTiles(pos);
 }
 
-async function onTileExplode() {
-	board.explodeSelectedTiles();
+async function clearTile() {
+	board.clearSelectedTiles();
 	await board.organizeBoard();
 
-	if (game_state.checkBoardFinished()) {
-		game_state.showBonusComponent = true;
-	}
-
 	shakeBoard();
+
+	if (game_state.checkBoardFinished()) {
+		deduce();
+	}
 }
 
 function shakeBoard(): void {
@@ -42,6 +45,25 @@ function shakeBoard(): void {
 		boardEl.value!.classList.remove("board-shake-subtle");
 	}, 100);
 }
+
+async function deduce(): Promise<void> {
+	game_state.resetEndGameBonus();
+
+	await delay(1000);
+	await game_state.getEndGameBonus();
+
+	game_state.points = game_state.points + game_state.endGameBonus!;
+	game_state.endGameBonus = null;
+
+	if (game_state.points >= game_state.goal) {
+		await game_state.newBoardTransition();
+
+		game_state.nextStage();
+	} else {
+		game_state.gameover = true;
+	}
+
+}
 </script>
 
 <template>
@@ -49,7 +71,7 @@ function shakeBoard(): void {
 		ref="boardEl"
 		id="board"
 		:style="{ gap: boardElGap }"
-		class="relative flex w-[500px] max-w-[100vw] items-center justify-center gap-2 rounded bg-white/75 p-2"
+		class="relative flex w-[500px] max-w-[100vw] items-center justify-center gap-2 rounded bg-white/50 p-2"
 		v-on-click-outside="
 			() => {
 				board.deselectAllTiles();
@@ -66,8 +88,8 @@ function shakeBoard(): void {
 				v-for="(tile, rowIndex) in column"
 				v-bind="tile"
 				:key="tile.id"
-				@select="onTileSelect({ x: columnIndex, y: rowIndex })"
-				@explode="onTileExplode"
+				@select="selectTile({ x: columnIndex, y: rowIndex })"
+				@explode="clearTile"
 				@force-select="tile.state = 'SELECTED'"
 			/>
 		</div>
