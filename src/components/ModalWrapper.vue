@@ -29,13 +29,13 @@ const props = defineProps<{
 		opacity: 0;
 	}
 
-	&-enter-active .component,
-	&-leave-active .component {
+	&-enter-active .modal,
+	&-leave-active .modal {
 		transition: all 300ms ease-in-out;
 	}
 
-	&-enter-from .component,
-	&-leave-to .component {
+	&-enter-from .modal,
+	&-leave-to .modal {
 		transform: translateY(-15px);
 		opacity: 0.001;
 	}
