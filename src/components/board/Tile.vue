@@ -32,7 +32,7 @@ function onClick(e: MouseEvent): void {
 		:class="[
 			state,
 			color,
-			'relative grid aspect-square place-items-center rounded border-[1px] border-transparent shadow-[0_0_3px] shadow-black/50',
+			'relative grid aspect-square place-items-center rounded border-[1px] border-transparent shadow-[0_0_3px] shadow-black/50 transition-[transform,_border-color,_filter]',
 		]"
 		@click="onClick"
 	>
