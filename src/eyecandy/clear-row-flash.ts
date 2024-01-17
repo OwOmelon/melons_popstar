@@ -2,32 +2,46 @@
 
 import type { TileID } from "../stores/board";
 
-const rowFlashes: number[] = [];
+export function clearRowFlash(row: number) {
+	const vfxBoard = document.getElementById("vfx-board")!;
+	const flash = createFlashEl();
 
-export function clearRowFlash(id: TileID) {
-	const row = +id[id.length - 1];
-	const rowFlashIndex = rowFlashes.indexOf(row);
+	vfxBoard.append(flash);
 
-	if (rowFlashIndex !== -1) return;
-
-	const app = document.getElementById('app')!
-	const boardElRect = document.getElementById("board")!.getBoundingClientRect();
-	const tileElRect = document.getElementById(id)!.getBoundingClientRect();
-	const flash = document.createElement("div");
-
-	flash.classList.add("clear-row-flash", "pointer-events-none", "fixed");
-
-	flash.style.left = `${boardElRect.left}px`;
-	flash.style.top = `${tileElRect.top}px`;
-	flash.style.width = `${boardElRect.width}px`;
-	flash.style.height = `${tileElRect.height}px`;
-
-	rowFlashes.push(row);
-
-	app.append(flash);
+	flash.animate(
+		[
+			{
+				backgroundSize: "100% 100%",
+			},
+			{
+				backgroundSize: "10000% 100%",
+			},
+		],
+		{ duration: 500, iterations: Infinity, easing: "ease" },
+	);
 
 	setTimeout(() => {
 		flash.remove();
-		rowFlashes.splice(rowFlashIndex, 1);
 	}, 200);
+
+	function createFlashEl(): HTMLElement {
+		const div = document.createElement("div");
+
+		div.style.gridRowStart = `${row + 1}`;
+		div.style.gridColumn = "span 10 / span 10";
+
+		div.style.backgroundPosition = "center";
+		div.style.backgroundSize = "100% 100%";
+		div.style.backgroundRepeat = "no-repeat";
+		div.style.backgroundImage = `linear-gradient(
+    		to right,
+    		rgba(255, 255, 255, 1) 0%,
+    		rgba(255, 255, 255, 1) 45%,
+    		rgba(255, 255, 255, 0) 50%,
+    		rgba(255, 255, 255, 1) 55%,
+    		rgba(255, 255, 255, 1) 1000%
+  		)`;
+
+		return div;
+	}
 }
