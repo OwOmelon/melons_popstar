@@ -1,6 +1,7 @@
 import { ref, computed, onMounted } from "vue";
 import { defineStore } from "pinia";
 import { useGameStateStore } from "./game_state";
+import { delay } from "@/composables/delay";
 import { clearPtsAnim } from "@/eyecandy/clear-pts-anim";
 import { clearRowFlash } from "@/eyecandy/clear-row-flash";
 
@@ -18,12 +19,15 @@ export type Tile = {
 	readonly color: TileColor;
 	state: TileState;
 	points: number;
+	delay: number /* ANIMATION/TRANSITION DELAY */;
 };
 
 export const useBoardStore = defineStore("board", () => {
 	const game_state = useGameStateStore();
 
 	// --------------------
+
+	const boardSize = 10;
 
 	const board = ref<Tile[][]>(createBoard());
 	const selectedTilePositions = ref<TilePosition[][]>([]);
@@ -37,26 +41,27 @@ export const useBoardStore = defineStore("board", () => {
 			"RED",
 		];
 
-		let newGrid: ReturnType<typeof createBoard> = [];
+		const board: ReturnType<typeof createBoard> = [];
 
-		for (let x = 0; x < 10; x++) {
-			const newColumn: Tile[] = [];
+		for (let x = 0; x < boardSize; x++) {
+			const column: Tile[] = [];
 
-			for (let y = 0; y < 10; y++) {
+			for (let y = 0; y < boardSize; y++) {
 				const tile: Tile = {
 					id: `spawnx${x}y${y}`,
 					color: tilePalette[Math.floor(Math.random() * tilePalette.length)],
 					state: "IDLE",
 					points: 0,
+					delay: 0,
 				};
 
-				newColumn.push(tile);
+				column.push(tile);
 			}
 
-			newGrid.push(newColumn);
+			board.push(column);
 		}
 
-		return newGrid;
+		return board;
 	}
 
 	// --------------------
@@ -108,22 +113,22 @@ export const useBoardStore = defineStore("board", () => {
 
 	async function organizeBoard(): Promise<void> {
 		const organizedBoard: Tile[][] = [];
-
+		const rowClears: number[] = [];
 		let totalPointsEarned = 0;
 
-		board.value.forEach((column) => {
+		board.value.forEach((column, x) => {
 			const organizedColumn: Tile[] = [];
 			let clearedTiles = 0;
 
-			column.forEach((tile, rowIndex) => {
+			column.forEach((tile, y) => {
 				if (tile.state === "TO_CLEAR") {
 					tile.state = "CLEARED";
-
-					totalPointsEarned = totalPointsEarned + tile.points;
 					organizedColumn.unshift(tile);
+					rowClears.push(y);
+
+					totalPointsEarned += tile.points;
 
 					clearPtsAnim(tile.id, tile.points);
-					clearRowFlash(tile.id);
 				} else {
 					organizedColumn.push(tile);
 				}
@@ -131,13 +136,18 @@ export const useBoardStore = defineStore("board", () => {
 				if (tile.state === "CLEARED") clearedTiles++;
 			});
 
+
 			if (clearedTiles !== column.length) {
 				organizedBoard.push(organizedColumn);
 			}
 		});
 
+		[...new Set(rowClears)].forEach((row) => {
+			clearRowFlash(row);
+		});
+
 		board.value = organizedBoard;
-		game_state.points = game_state.points + totalPointsEarned;
+		game_state.points += totalPointsEarned;
 
 		return;
 	}
@@ -158,12 +168,16 @@ export const useBoardStore = defineStore("board", () => {
 	// --------------------
 
 	return {
+		boardSize,
+
 		board,
 		createBoard,
+
 		deselectAllTiles,
 		selectTiles,
 		clearSelectedTiles,
 		organizeBoard,
+
 		getTile,
 		getLinearAdjacentPositions,
 	};
