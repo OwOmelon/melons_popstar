@@ -20,6 +20,10 @@ const boardElGap = computed<string>(() => {
 	return `${width.value / 80}px`;
 });
 
+const columnWidth = computed<string>(() => {
+	return `calc(10% - ${boardElGap.value})`
+})
+
 // ----------
 
 function selectTile(pos: TilePosition) {
@@ -62,7 +66,6 @@ async function deduce(): Promise<void> {
 	} else {
 		game_state.gameover = true;
 	}
-
 }
 </script>
 
@@ -81,7 +84,7 @@ async function deduce(): Promise<void> {
 	>
 		<div
 			v-for="(column, columnIndex) in board.board"
-			:style="{ width: `calc(10% - ${boardElGap})` }"
+			:style="{ width: columnWidth }"
 			class="relative flex flex-col gap-[inherit]"
 		>
 			<Tile
@@ -92,6 +95,16 @@ async function deduce(): Promise<void> {
 				@explode="clearTile"
 				@force-select="tile.state = 'SELECTED'"
 			/>
+		</div>
+
+		<div
+			id="vfx-board"
+			:style="{
+				gridTemplateColumns: `repeat(${board.board.length}, minmax(0, ${columnWidth}))`,
+				gridTemplateRows: `repeat(${board.boardSize}, minmax(0, 1fr))`,
+			}"
+			class="pointer-events-none absolute left-0 top-0 grid justify-center h-full w-full gap-[inherit] p-[inherit]"
+		>
 		</div>
 	</div>
 </template>
