@@ -11,15 +11,13 @@ export type TilePosition = {
 };
 
 export type TileID = `spawnx${number}y${number}`;
-export type TileState = "IDLE" | "SELECTED" | "TO_CLEAR" | "CLEARED";
+export type TileState = "IDLE" | "SELECTED" | "CLEARED";
 export type TileColor = "YELLOW" | "PURPLE" | "BLUE" | "GREEN" | "RED";
 
 export type Tile = {
 	readonly id: TileID;
 	readonly color: TileColor;
 	state: TileState;
-	points: number;
-	delay: number /* ANIMATION/TRANSITION DELAY */;
 };
 
 export const useBoardStore = defineStore("board", () => {
@@ -28,9 +26,7 @@ export const useBoardStore = defineStore("board", () => {
 	// --------------------
 
 	const boardSize = 10;
-
 	const board = ref<Tile[][]>(createBoard());
-	const selectedTilePositions = ref<TilePosition[][]>([]);
 
 	function createBoard(): Tile[][] {
 		const tilePalette: TileColor[] = [
@@ -51,8 +47,6 @@ export const useBoardStore = defineStore("board", () => {
 					id: `spawnx${x}y${y}`,
 					color: tilePalette[Math.floor(Math.random() * tilePalette.length)],
 					state: "IDLE",
-					points: 0,
-					delay: 0,
 				};
 
 				column.push(tile);
@@ -64,7 +58,17 @@ export const useBoardStore = defineStore("board", () => {
 		return board;
 	}
 
-	// --------------------
+	// --------------------=
+
+	let selectedTilePositions: { [key: TilePosition["x"]]: TilePosition["y"][] } =
+		{};
+
+	function addSelectedTilePositions(pos: TilePosition): void {
+		const column = selectedTilePositions[pos.x] ?? [];
+
+		column.push(pos.y);
+		selectedTilePositions[pos.x] = column;
+	}
 
 	function selectTiles(pos: TilePosition): void {
 		const tile = getTile(pos);
@@ -81,54 +85,44 @@ export const useBoardStore = defineStore("board", () => {
 			if (adjTile.color === tile.color) {
 				adjTile.state = "SELECTED";
 
+				addSelectedTilePositions(adjPos);
 				selectTiles(adjPos);
 			}
 		});
 	}
 
 	function deselectAllTiles(): void {
-		board.value.forEach((column) => {
-			column.forEach((tile) => {
-				if (tile.state === "SELECTED") {
-					tile.state = "IDLE";
-				}
+		Object.entries(selectedTilePositions).forEach(([column, rows]) => {
+			rows.forEach((row) => {
+				const tile = getTile({ x: +column, y: row })!;
+
+				tile.state = "IDLE";
 			});
 		});
-	}
 
-	function clearSelectedTiles(): void {
-		let pointsEarned = 5;
-
-		board.value.forEach((column) => {
-			column.forEach((tile) => {
-				if (tile.state === "SELECTED") {
-					tile.state = "TO_CLEAR";
-					tile.points = pointsEarned;
-
-					pointsEarned = pointsEarned + 10;
-				}
-			});
-		});
+		selectedTilePositions = {};
 	}
 
 	async function organizeBoard(): Promise<void> {
-		const organizedBoard: Tile[][] = [];
+		const emptyColumns: number[] = [];
 		const rowClears: number[] = [];
-		let totalPointsEarned = 0;
+		let pointsEarned: number = 5;
 
-		board.value.forEach((column, x) => {
+		Object.entries(selectedTilePositions).forEach(([columnIndex, rows]) => {
+			const column = board.value[+columnIndex];
 			const organizedColumn: Tile[] = [];
-			let clearedTiles = 0;
+			let clearedTiles: number = 0;
 
-			column.forEach((tile, y) => {
-				if (tile.state === "TO_CLEAR") {
+			column.forEach((tile, rowIndex) => {
+				if (tile.state === "SELECTED") {
 					tile.state = "CLEARED";
 					organizedColumn.unshift(tile);
-					rowClears.push(y);
+					rowClears.push(rowIndex);
 
-					totalPointsEarned += tile.points;
+					clearPtsAnim(tile.id, pointsEarned);
 
-					clearPtsAnim(tile.id, tile.points);
+					pointsEarned += 10;
+					game_state.points += pointsEarned;
 				} else {
 					organizedColumn.push(tile);
 				}
@@ -136,9 +130,10 @@ export const useBoardStore = defineStore("board", () => {
 				if (tile.state === "CLEARED") clearedTiles++;
 			});
 
-
-			if (clearedTiles !== column.length) {
-				organizedBoard.push(organizedColumn);
+			if (clearedTiles === boardSize) {
+				emptyColumns.push(+columnIndex);
+			} else {
+				board.value[+columnIndex] = organizedColumn;
 			}
 		});
 
@@ -146,11 +141,16 @@ export const useBoardStore = defineStore("board", () => {
 			clearRowFlash(row);
 		});
 
-		board.value = organizedBoard;
-		game_state.points += totalPointsEarned;
+		board.value = board.value.filter(
+			(column, columnIndex) => !emptyColumns.includes(columnIndex),
+		);
+
+		selectedTilePositions = {};
 
 		return;
 	}
+
+	// --------------------
 
 	function getTile(pos: TilePosition): Tile | null {
 		return board.value?.[pos.x]?.[pos.y] ?? null;
@@ -175,7 +175,7 @@ export const useBoardStore = defineStore("board", () => {
 
 		deselectAllTiles,
 		selectTiles,
-		clearSelectedTiles,
+		// clearSelectedTiles,
 		organizeBoard,
 
 		getTile,

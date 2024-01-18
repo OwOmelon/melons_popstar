@@ -32,7 +32,6 @@ function selectTile(pos: TilePosition) {
 }
 
 async function clearTile() {
-	board.clearSelectedTiles();
 	await board.organizeBoard();
 
 	shakeBoard();
