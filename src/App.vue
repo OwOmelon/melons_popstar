@@ -105,55 +105,6 @@ body {
 
 /* ----- */
 
-.pts-anim {
-  animation: pts-anim 800ms ease forwards;
-}
-
-@keyframes pts-anim {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-}
-
-/* ----- */
-
-.clear-row-flash {
-  position: absolute;
-  height: 2.5rem;
-  width: 100%;
-
-  background-image: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 1) 45%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 1) 55%,
-    rgba(255, 255, 255, 1) 1000%
-  );
-  background-position: center;
-  background-repeat: no-repeat;
-
-  animation: clear-row-flash 1s linear infinite;
-}
-
-@keyframes clear-row-flash {
-  from {
-    background-size: 100% 100%;
-  }
-
-  to {
-    background-size: 10000% 100%;
-  }
-}
-
-/* ----- */
-
 .board-enter {
   animation: enter 3s forwards;
 }
