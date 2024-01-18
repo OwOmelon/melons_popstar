@@ -73,7 +73,7 @@ async function deduce(): Promise<void> {
 		ref="boardEl"
 		id="board"
 		:style="{ gap: boardElGap }"
-		class="relative flex w-[500px] max-w-[100vw] items-center justify-center gap-2 rounded bg-white/50 p-2"
+		class="relative flex w-[500px] max-w-[100vw] items-center justify-center gap-2 rounded p-2"
 		v-on-click-outside="
 			() => {
 				board.deselectAllTiles();
