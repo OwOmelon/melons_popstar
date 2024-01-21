@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useGameStateStore } from "@/stores/game_state";
 
+import BG from "./components/BG.vue";
 import PauseBtn from "./components/pause/Btn.vue";
 import PauseMenu from "./components/pause/Menu.vue";
 import GameInfo from "./components/GameInfo.vue";
@@ -8,52 +9,38 @@ import EndGameBonus from "./components/EndGameBonus.vue";
 import GameOver from "./components/GameOver.vue";
 import Board from "./components/board/Board.vue";
 import ModalWrapper from "./components/ModalWrapper.vue";
-import debug from "./components/_debug.vue";
 
 const game_state = useGameStateStore();
 
 async function restart(): Promise<void> {
-  game_state.gameover = false
+  game_state.gameover = false;
 
-  await game_state.newBoardTransition()
-  game_state.resetState()
+  await game_state.newBoardTransition();
+  game_state.resetState();
 }
 </script>
 
 <template>
-  <div class="relative flex h-screen flex-col">
+  <BG />
+
+  <div
+    class="relative flex h-screen w-[500px] max-w-[100vw] flex-col overflow-hidden"
+  >
     <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
     <GameInfo />
+    <EndGameBonus :bonus="game_state.endGameBonus" />
 
-    <div class="grid grow place-items-center">
-      <Transition name="slow-fade" mode="out-in">
-        <EndGameBonus
-          ref="bonus"
-          v-if="game_state.endGameBonus !== null"
-          :bonus="game_state.endGameBonus || 0"
-        />
-      </Transition>
-    </div>
-
-    <div class="relative">
-      <Board />
-
-      <Transition name="slow-fade">
-        <GameOver
-          v-if="game_state.gameover"
-          class="absolute top-[25%] w-full"
-          @restart="restart"
-        />
-      </Transition>
-    </div>
+    <Board />
   </div>
+
+  <Transition name="slow-fade">
+    <GameOver v-if="game_state.gameover" @restart="restart" />
+  </Transition>
 
   <ModalWrapper :show="game_state.paused">
     <PauseMenu @close="game_state.paused = false" />
   </ModalWrapper>
-
-  <debug />
 </template>
 
 <style lang="postcss">
@@ -70,7 +57,7 @@ body {
 }
 
 #app {
-  @apply flex min-h-screen flex-col items-center justify-center;
+  @apply flex flex-col items-center justify-center;
 }
 
 .shadow-subtle {
