@@ -14,6 +14,8 @@ const stagePass = computed<boolean>(() => {
 watch(
 	() => game_state.points,
 	(newPts, oldPts) => {
+		if (newPts === 0) return;
+
 		key.value++;
 		pointsGained.value = newPts - oldPts;
 	},
@@ -27,7 +29,8 @@ watch(
 		<span
 			:class="[
 				{
-					'shadow-subtle shine !border-white bg-amber-400 text-white': stagePass,
+					'shadow-subtle shine !border-white bg-amber-400 text-white':
+						stagePass,
 				},
 				'absolute left-1/2 top-1/2 mx-auto w-fit -translate-x-1/2 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-4xl transition-colors',
 			]"
