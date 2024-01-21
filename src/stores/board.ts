@@ -104,20 +104,25 @@ export const useBoardStore = defineStore("board", () => {
 	}
 
 	async function organizeBoard(): Promise<void> {
-		const emptyColumns: number[] = [];
+		const organizedBoard: typeof board.value = [];
 		const rowClears: number[] = [];
 		let pointsEarned: number = 5;
 
-		Object.entries(selectedTilePositions).forEach(([columnIndex, rows]) => {
-			const column = board.value[+columnIndex];
-			const organizedColumn: Tile[] = [];
+		board.value.forEach((column, x) => {
+			if (selectedTilePositions[x] === undefined) {
+				organizedBoard.push(column);
+
+				return;
+			}
+
+			const organizedColumn: typeof column = [];
 			let clearedTiles: number = 0;
 
-			column.forEach((tile, rowIndex) => {
+			column.forEach((tile, y) => {
 				if (tile.state === "SELECTED") {
 					tile.state = "CLEARED";
 					organizedColumn.unshift(tile);
-					rowClears.push(rowIndex);
+					rowClears.push(y);
 
 					clearPtsAnim(tile.id, pointsEarned);
 
@@ -130,22 +135,15 @@ export const useBoardStore = defineStore("board", () => {
 				if (tile.state === "CLEARED") clearedTiles++;
 			});
 
-			if (clearedTiles === boardSize) {
-				emptyColumns.push(+columnIndex);
-			} else {
-				board.value[+columnIndex] = organizedColumn;
-			}
+			if (clearedTiles !== boardSize) organizedBoard.push(organizedColumn);
 		});
+
+		board.value = organizedBoard;
+		selectedTilePositions = {};
 
 		[...new Set(rowClears)].forEach((row) => {
 			clearRowFlash(row);
 		});
-
-		board.value = board.value.filter(
-			(column, columnIndex) => !emptyColumns.includes(columnIndex),
-		);
-
-		selectedTilePositions = {};
 
 		return;
 	}
@@ -175,7 +173,6 @@ export const useBoardStore = defineStore("board", () => {
 
 		deselectAllTiles,
 		selectTiles,
-		// clearSelectedTiles,
 		organizeBoard,
 
 		getTile,
