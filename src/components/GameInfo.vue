@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { useGameStateStore } from "@/stores/game_state";
 
 const game_state = useGameStateStore();
 
-const key = ref<number>(0)
+const key = ref<number>(0);
 const pointsGained = ref<number>(0);
+
+const stagePass = computed<boolean>(() => {
+	return game_state.points >= game_state.goal;
+});
 
 watch(
 	() => game_state.points,
 	(newPts, oldPts) => {
-		key.value++
+		key.value++;
 		pointsGained.value = newPts - oldPts;
 	},
 );
@@ -22,14 +26,25 @@ watch(
 
 		<span
 			:class="[
-				{ 'bg-amber-500/ text-white/': game_state.points >= game_state.goal },
-				'absolute left-1/2 top-1/2 mx-auto w-fit -translate-x-1/2 -translate-y-1/2 rounded px-4 py-2 text-center text-4xl',
+				{
+					'shadow-subtle shine !border-white bg-amber-400 text-white': stagePass,
+				},
+				'absolute left-1/2 top-1/2 mx-auto w-fit -translate-x-1/2 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-4xl transition-colors',
 			]"
 		>
 			{{ game_state.points }}
 		</span>
 
-		<span>goal: {{ game_state.goal }}</span>
+		<div class="relative">
+			<span>goal: {{ game_state.goal }}</span>
+
+			<div
+				:class="[
+					stagePass ? 'w-[120%]' : 'w-0',
+					'absolute left-1/2 top-1/2 h-[2px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-black transition-[width]',
+				]"
+			/>
+		</div>
 
 		<div
 			class="absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-[calc(50%_-_2rem)] place-items-center"
@@ -59,6 +74,31 @@ watch(
 
 	100% {
 		opacity: 0;
+	}
+}
+
+.shine {
+	background-image: linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(255, 255, 255, 1) 10%,
+		rgba(255, 255, 255, 0) 20%,
+		rgba(255, 255, 255, 0) 1000%
+	);
+	background-size: 200% 100%;
+	background-repeat: no-repeat;
+
+	animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+	0% {
+		background-position: 50% 0;
+	}
+
+	25%,
+	100% {
+		background-position: -400% 0;
 	}
 }
 </style>
