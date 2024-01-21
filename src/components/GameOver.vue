@@ -7,23 +7,16 @@ const emit = defineEmits<{
 </script>
 
 <template>
-	<div class="flex gap-5 items-center justify-center">
-		<span class="text-4xl font-bold ">GAME OVER</span>
+	<div
+		class="bg-red-400 px-4 py-2 rounded border-2 border-white shadow-subtle fixed left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-5"
+	>
+		<span class="text-4xl font-bold text-white">GAME OVER</span>
 		<button
 			type="button"
-			class="shadow-subtle rounded bg-amber-300 p-2 text-white transition-transform hover:-translate-y-1"
+			class="shadow-subtle rounded bg-white p-2 text-white transition-transform hover:-translate-y-1"
 			@click="emit('restart')"
 		>
-			<RetryIcon class="h-8 w-8" />
+			<RetryIcon class="h-8 w-8 text-amber-300" />
 		</button>
 	</div>
 </template>
-
-<style scoped lang="postcss">
-.score-details {
-	@apply flex flex-col items-center
-}
-span {
-	@apply block;
-}
-</style>
