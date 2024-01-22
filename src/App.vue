@@ -53,7 +53,7 @@ async function restart(): Promise<void> {
 }
 
 body {
-  @apply bg-amber-100 font-["Poppins",_sans-serrif];
+  @apply font-["Poppins",_sans-serrif];
 }
 
 #app {
