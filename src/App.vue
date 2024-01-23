@@ -24,7 +24,7 @@ async function restart(): Promise<void> {
   <BG />
 
   <div
-    class="relative flex h-screen w-[500px] max-w-[100vw] flex-col overflow-hidden"
+    class="relative flex h-screen w-[500px] max-w-[100vw] flex-col"
   >
     <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
@@ -57,7 +57,7 @@ body {
 }
 
 #app {
-  @apply flex flex-col items-center justify-center;
+  @apply flex flex-col items-center justify-center overflow-hidden;
 }
 
 .shadow-subtle {
