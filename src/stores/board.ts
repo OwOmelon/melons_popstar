@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 import { useGameStateStore } from "./game_state";
 import { delay } from "@/composables/delay";
 import { clearPtsAnim } from "@/eyecandy/clear-pts-anim";
-import { clearRowFlash } from "@/eyecandy/clear-row-flash";
 
 export type TilePosition = {
 	x: number;
@@ -98,7 +97,6 @@ export const useBoardStore = defineStore("board", () => {
 
 	async function organizeBoard(): Promise<void> {
 		const organizedBoard: typeof board.value = [];
-		const rowClears: number[] = [];
 		let pointsEarned: number = 5;
 
 		board.value.forEach((column, x) => {
@@ -115,7 +113,6 @@ export const useBoardStore = defineStore("board", () => {
 				if (tile.state === "SELECTED") {
 					tile.state = "CLEARED";
 					organizedColumn.unshift(tile);
-					rowClears.push(y);
 
 					clearPtsAnim(tile.id, pointsEarned);
 
@@ -133,10 +130,6 @@ export const useBoardStore = defineStore("board", () => {
 
 		board.value = organizedBoard;
 		selectedTilePositions = {};
-
-		[...new Set(rowClears)].forEach((row) => {
-			clearRowFlash(row);
-		});
 
 		return;
 	}
@@ -161,7 +154,7 @@ export const useBoardStore = defineStore("board", () => {
 	return {
 		boardSize,
 		tilePalette,
-		
+
 		board,
 		createBoard,
 
