@@ -26,17 +26,10 @@ export const useBoardStore = defineStore("board", () => {
 	// --------------------
 
 	const boardSize = 10;
+	const tilePalette: TileColor[] = ["YELLOW", "PURPLE", "BLUE", "GREEN", "RED"];
 	const board = ref<Tile[][]>(createBoard());
 
 	function createBoard(): Tile[][] {
-		const tilePalette: TileColor[] = [
-			"YELLOW",
-			"PURPLE",
-			"BLUE",
-			"GREEN",
-			"RED",
-		];
-
 		const board: ReturnType<typeof createBoard> = [];
 
 		for (let x = 0; x < boardSize; x++) {
@@ -167,7 +160,8 @@ export const useBoardStore = defineStore("board", () => {
 
 	return {
 		boardSize,
-
+		tilePalette,
+		
 		board,
 		createBoard,
 
