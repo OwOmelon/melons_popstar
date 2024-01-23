@@ -2,7 +2,7 @@
 
 import type { TileID } from "../stores/board";
 
-export function clearPtsAnim(id: TileID, points: number): void {
+export function tileClearAnim(id: TileID, points: number): void {
 	const vfxBoard: HTMLElement = document.getElementById("vfx-board")!;
 	const vfxBoardRect: DOMRect = vfxBoard.getBoundingClientRect();
 
