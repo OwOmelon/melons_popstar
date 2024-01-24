@@ -8,16 +8,9 @@ const props = defineProps<Tile>();
 const emit = defineEmits<{
 	select: [];
 	explode: [];
-	"force-select": [];
 }>();
 
-function onClick(e: MouseEvent): void {
-	if (e.ctrlKey) {
-		emit("force-select");
-
-		return;
-	}
-
+function onClick(): void {
 	if (props.state === "SELECTED") {
 		emit("explode");
 	} else {
@@ -36,7 +29,9 @@ function onClick(e: MouseEvent): void {
 		]"
 		@click="onClick"
 	>
-		<IconStar class="absolute h-full w-full text-white drop-shadow-[0_0_3px_rgba(0,0,0,0.2)]" />
+		<IconStar
+			class="absolute h-full w-full text-white drop-shadow-[0_0_3px_rgba(0,0,0,0.2)]"
+		/>
 	</div>
 </template>
 

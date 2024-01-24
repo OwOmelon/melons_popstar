@@ -82,17 +82,16 @@ async function deduce(): Promise<void> {
 		@click.self="board.deselectAllTiles()"
 	>
 		<div
-			v-for="(column, columnIndex) in board.board"
+			v-for="(column, x) in board.board"
 			:style="{ width: columnWidth }"
 			class="relative flex flex-col gap-[inherit]"
 		>
 			<Tile
-				v-for="(tile, rowIndex) in column"
+				v-for="(tile, y) in column"
 				v-bind="tile"
 				:key="tile.id"
-				@select="selectTile({ x: columnIndex, y: rowIndex })"
+				@select="selectTile({ x, y })"
 				@explode="clearTile"
-				@force-select="tile.state = 'SELECTED'"
 			/>
 		</div>
 
