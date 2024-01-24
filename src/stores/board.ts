@@ -55,7 +55,7 @@ export const useBoardStore = defineStore("board", () => {
 	let selectedTilePositions: { [key: TilePosition["x"]]: TilePosition["y"][] } =
 		{};
 
-	function addSelectedTilePositions(pos: TilePosition): void {
+	function addSelectedTilePosition(pos: TilePosition): void {
 		const column = selectedTilePositions[pos.x] ?? [];
 
 		column.push(pos.y);
@@ -77,7 +77,7 @@ export const useBoardStore = defineStore("board", () => {
 			if (adjTile.color === tile.color) {
 				adjTile.state = "SELECTED";
 
-				addSelectedTilePositions(adjPos);
+				addSelectedTilePosition(adjPos);
 				selectTiles(adjPos);
 			}
 		});
