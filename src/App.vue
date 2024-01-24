@@ -23,7 +23,11 @@ async function restart(): Promise<void> {
 <template>
   <BG />
 
-  <div class="relative flex h-screen w-[500px] max-w-[100vw] flex-col">
+  <div
+    class="relative flex h-screen w-[500px] max-w-[100vw] flex-col"
+  >
+    <PauseBtn class="invisible mb-5 ml-auto mr-5 mt-3" />
+
     <GameInfo />
     <EndGameBonus :bonus="game_state.endGameBonus" />
 
