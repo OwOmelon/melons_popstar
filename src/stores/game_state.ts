@@ -68,10 +68,15 @@ export const useGameStateStore = defineStore("game-state", () => {
 	async function newBoardTransition(): Promise<void> {
 		const boardEl = document.getElementById("board")!;
 		const boardAnimationDuration = 3000;
+		const allTilesCleared = board.board.every((column) => {
+			return column.every((tile) => tile.state === "CLEARED");
+		});
 
-		boardEl.classList.add("board-leave");
+		if (!allTilesCleared) {
+			boardEl.classList.add("board-leave");
 
-		await delay(boardAnimationDuration);
+			await delay(boardAnimationDuration);
+		}
 
 		board.board = board.createBoard();
 		boardEl.classList.remove("board-leave");
