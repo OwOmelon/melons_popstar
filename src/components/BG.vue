@@ -22,7 +22,7 @@ const opacity = computed(() => {
 			<div
 				:class="[
 					opacity,
-					'bg-image scrollX absolute h-[200%] w-[200%] transition-opacity duration-1000',
+					'bg-image scroll absolute h-[200%] w-[200%] transition-opacity duration-1000',
 				]"
 			/>
 		</div>
@@ -42,11 +42,11 @@ const opacity = computed(() => {
 	background-size: 26px;
 }
 
-.scrollX {
-	animation: scrollX 2s infinite linear;
+.scroll {
+	animation: scroll 2s infinite linear;
 }
 
-@keyframes scrollX {
+@keyframes scroll {
 	from {
 		transform: translate(13px, 13px);
 	}
