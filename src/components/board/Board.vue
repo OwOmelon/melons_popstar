@@ -94,16 +94,6 @@ async function deduce(): Promise<void> {
 				@explode="clearTile"
 			/>
 		</div>
-
-		<div
-			id="vfx-board"
-			:style="{
-				gridTemplateColumns: `repeat(${board.board.length}, minmax(0, ${columnWidth}))`,
-				gridTemplateRows: `repeat(${board.boardSize}, minmax(0, 1fr))`,
-			}"
-			class="pointer-events-none absolute left-0 top-0 grid justify-center h-full w-full gap-[inherit] p-[inherit]"
-		>
-		</div>
 	</div>
 </template>
 

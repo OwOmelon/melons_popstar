@@ -3,13 +3,12 @@
 import type { TileID } from "../stores/board";
 
 export function tileClearAnim(id: TileID, points: number): void {
-	const vfxBoard: HTMLElement = document.getElementById("vfx-board")!;
-	const vfxBoardRect: DOMRect = vfxBoard.getBoundingClientRect();
+	const vfxDiv: HTMLElement = document.getElementById("vfx")!;
 
 	const tile: HTMLElement = document.getElementById(id)!;
 	const tileRect: DOMRect = tile.getBoundingClientRect();
 
-	const fx = createContainer(tileRect, vfxBoardRect);
+	const fx = createContainer(tileRect);
 	const star = createStarSvg(tileRect);
 	const pts = createPtsEl(points);
 	const animDur: number = 800;
@@ -17,7 +16,7 @@ export function tileClearAnim(id: TileID, points: number): void {
 	fx.appendChild(star);
 	fx.appendChild(pts);
 
-	vfxBoard.appendChild(fx);
+	vfxDiv.appendChild(fx);
 
 	fx.animate(
 		[
@@ -52,19 +51,18 @@ export function tileClearAnim(id: TileID, points: number): void {
 
 function createContainer(
 	tileRect: DOMRect,
-	vfxBoardRect: DOMRect,
 ): HTMLElement {
 	const div: HTMLDivElement = document.createElement("div");
 
-	div.style.left = `${tileRect.left - vfxBoardRect.left}px`;
-	div.style.top = `${tileRect.top - vfxBoardRect.top}px`;
+	div.style.left = `${tileRect.left}px`;
+	div.style.top = `${tileRect.top}px`;
 
 	div.style.width = `${tileRect.width}px`;
 	div.style.height = `${tileRect.height}px`;
 
 	div.classList.add(
 		"pointer-events-none",
-		"absolute",
+		"fixed",
 		"grid",
 		"place-items-center",
 	);
