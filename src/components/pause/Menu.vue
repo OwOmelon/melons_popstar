@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { vOnClickOutside } from "@vueuse/components";
 
+import Settings from "./settings/Settings.vue";
+
 import CloseIcon from "~icons/material-symbols/close-small-rounded";
 import RetryIcon from "~icons/material-symbols/replay-rounded";
 import PlayIcon from "~icons/material-symbols/play-arrow-rounded";
@@ -28,15 +30,11 @@ const emit = defineEmits<{
 		</div>
 
 		<div class="menu rounded-b bg-white p-5">
-			<div class="settings flex flex-wrap gap-2">
-				<button v-for="n in 5" type="button">
-					setting {{ n }} <PlayIcon />
-				</button>
-			</div>
+			<Settings />
 
 			<hr class="my-5 rounded-full border-t-2 border-neutral-300" />
 
-			<div class="flex gap-3 text-xl">
+			<div class="game flex gap-3 text-xl">
 				<button type="button">RETRY <RetryIcon /></button>
 				<button type="button" @click="emit('close')">
 					CONTINUE <PlayIcon />
@@ -47,7 +45,7 @@ const emit = defineEmits<{
 </template>
 
 <style scoped lang="postcss">
-.menu button {
+.game button {
 	@apply flex grow items-center justify-center  gap-2 rounded bg-amber-300 px-4 py-2 font-semibold text-white shadow shadow-black/25 transition-transform hover:-translate-y-1;
 }
 </style>

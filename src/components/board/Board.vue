@@ -4,6 +4,7 @@ import { useElementSize } from "@vueuse/core";
 import { vOnClickOutside } from "@vueuse/components";
 import { useBoardStore } from "@/stores/board";
 import { useGameStateStore } from "@/stores/game_state";
+import { useSettingsStore } from "@/stores/settings";
 import { delay } from "@/composables/delay";
 
 import type { TilePosition } from "@/stores/board";
@@ -12,6 +13,7 @@ import Tile from "./Tile.vue";
 
 const board = useBoardStore();
 const game_state = useGameStateStore();
+const settings = useSettingsStore();
 
 const boardEl = ref<HTMLElement | null>(null);
 const { width } = useElementSize(boardEl);
@@ -21,8 +23,8 @@ const boardElGap = computed<string>(() => {
 });
 
 const columnWidth = computed<string>(() => {
-	return `calc(10% - ${boardElGap.value})`
-})
+	return `calc(10% - ${boardElGap.value})`;
+});
 
 // ----------
 
@@ -34,7 +36,7 @@ function selectTile(pos: TilePosition) {
 async function clearTile() {
 	await board.organizeBoard();
 
-	shakeBoard();
+	if (settings.boardShake) shakeBoard();
 
 	if (game_state.checkBoardFinished()) {
 		deduce();
@@ -89,6 +91,7 @@ async function deduce(): Promise<void> {
 			<Tile
 				v-for="(tile, y) in column"
 				v-bind="tile"
+				:select-transition="settings.tileSelectAnim"
 				:key="tile.id"
 				@select="selectTile({ x, y })"
 				@explode="clearTile"

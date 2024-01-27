@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useGameStateStore } from "@/stores/game_state";
+import { useSettingsStore } from "@/stores/settings";
 
 const game_state = useGameStateStore();
+const settings = useSettingsStore();
 
 const opacity = computed(() => {
 	return game_state.gameover ? "opacity-20" : "opacity-75";
@@ -21,8 +23,9 @@ const opacity = computed(() => {
 		>
 			<div
 				:class="[
+					{ scroll: settings.bgAnim },
 					opacity,
-					'bg-image scroll absolute h-[200%] w-[200%] transition-opacity duration-1000',
+					'bg-image absolute h-[200%] w-[200%] transition-opacity duration-1000',
 				]"
 			/>
 		</div>

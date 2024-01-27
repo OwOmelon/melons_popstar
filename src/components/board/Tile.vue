@@ -3,7 +3,11 @@ import IconStar from "~icons/material-symbols-light/kid-star";
 
 import type { Tile } from "@/stores/board";
 
-const props = defineProps<Tile>();
+const props = defineProps<
+	Tile & {
+		selectTransition: boolean;
+	}
+>();
 
 const emit = defineEmits<{
 	select: [];
@@ -23,9 +27,10 @@ function onClick(): void {
 	<div
 		:id="id"
 		:class="[
+			{ 'transition-[transform,_border-color,_filter]': selectTransition },
 			state,
 			color,
-			'relative grid aspect-square place-items-center rounded border-[1px] border-transparent shadow-[0_0_3px] shadow-black/50 transition-[transform,_border-color,_filter]',
+			'relative grid aspect-square place-items-center rounded border-2 border-[1px] border-black border-transparent   shadow-[0_0_3px] shadow-black/50',
 		]"
 		@click="onClick"
 	>

@@ -9,6 +9,7 @@ import EndGameBonus from "./components/EndGameBonus.vue";
 import GameOver from "./components/GameOver.vue";
 import Board from "./components/board/Board.vue";
 import ModalWrapper from "./components/ModalWrapper.vue";
+import d from "./components/_debug.vue";
 
 const game_state = useGameStateStore();
 
@@ -26,7 +27,7 @@ async function restart(): Promise<void> {
   <div
     class="relative flex h-screen w-[500px] max-w-[100vw] flex-col"
   >
-    <PauseBtn class="invisible mb-5 ml-auto mr-5 mt-3" />
+    <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
     <GameInfo />
     <EndGameBonus :bonus="game_state.endGameBonus" />
@@ -41,6 +42,8 @@ async function restart(): Promise<void> {
   <ModalWrapper :show="game_state.paused">
     <PauseMenu @close="game_state.paused = false" />
   </ModalWrapper>
+
+  <d />
 </template>
 
 <style lang="postcss">
