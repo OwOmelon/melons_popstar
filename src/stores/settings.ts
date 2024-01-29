@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { useStorage } from "@vueuse/core";
 
 type Setting =
 	| "bg-anim"
@@ -8,15 +9,19 @@ type Setting =
 	| "board-shake";
 
 export const useSettingsStore = defineStore("settings", () => {
-	const bgAnim = ref<boolean>(true);
-	const boardShake = ref<boolean>(true);
-	const tileSelectAnim = ref<boolean>(true);
-	const tileClearAnim = ref<boolean>(true);
+	const bgAnim = useStorage("bg-anim", true);
+	const boardShake = useStorage("board-shake", true);
+	const tileSelectAnim = useStorage("tile-select-anim", true);
+	const tileClearAnim = useStorage("tile-clear-anim", true);
 
 	function toggleSetting(setting: Setting) {
 		switch (setting) {
 			case "bg-anim":
 				bgAnim.value = !bgAnim.value;
+				break;
+
+			case "board-shake":
+				boardShake.value = !boardShake.value;
 				break;
 
 			case "tile-select-anim":
@@ -25,10 +30,6 @@ export const useSettingsStore = defineStore("settings", () => {
 
 			case "tile-clear-anim":
 				tileClearAnim.value = !tileClearAnim.value;
-				break;
-
-			case "board-shake":
-				boardShake.value = !boardShake.value;
 				break;
 		}
 	}
