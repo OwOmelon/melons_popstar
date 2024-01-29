@@ -8,6 +8,7 @@ import RetryIcon from "~icons/material-symbols/replay-rounded";
 import PlayIcon from "~icons/material-symbols/play-arrow-rounded";
 
 const emit = defineEmits<{
+	restart: [];
 	close: [];
 }>();
 </script>
@@ -25,7 +26,7 @@ const emit = defineEmits<{
 			class="flex justify-end rounded-t border-b-4 border-amber-500 bg-amber-400"
 		>
 			<button type="button" class="m-2 rounded bg-white" @click="emit('close')">
-				<CloseIcon class="h-8 w-8" />
+				<CloseIcon class="h-6 w-6" />
 			</button>
 		</div>
 
@@ -35,7 +36,18 @@ const emit = defineEmits<{
 			<hr class="my-5 rounded-full border-t-2 border-neutral-300" />
 
 			<div class="game flex gap-3 text-xl">
-				<button type="button">RETRY <RetryIcon /></button>
+				<button
+					type="button"
+					@click="
+						() => {
+							emit('close');
+							emit('restart');
+						}
+					"
+				>
+					RESTART <RetryIcon />
+				</button>
+
 				<button type="button" @click="emit('close')">
 					CONTINUE <PlayIcon />
 				</button>
