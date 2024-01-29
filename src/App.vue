@@ -92,40 +92,4 @@ body {
     opacity: 0;
   }
 }
-
-/* ----- */
-
-.board-enter {
-  animation: enter 3s forwards;
-}
-
-@keyframes enter {
-  from {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ----- */
-
-.board-leave {
-  animation: leave 3s forwards;
-}
-
-@keyframes leave {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-}
 </style>

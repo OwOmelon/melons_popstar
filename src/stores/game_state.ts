@@ -73,14 +73,38 @@ export const useGameStateStore = defineStore("game-state", () => {
 		});
 
 		if (!allTilesCleared) {
-			boardEl.classList.add("board-leave");
+			boardEl.animate(
+				[
+					{
+						opacity: "1",
+						transform: "translateX(0)",
+					},
+					{
+						opacity: "0",
+						transform: "translateX(100%)",
+					},
+				],
+				{ duration: boardAnimationDuration, easing: "ease", fill: "forwards" },
+			);
 
 			await delay(boardAnimationDuration);
 		}
 
 		board.board = board.createBoard();
-		boardEl.classList.remove("board-leave");
-		boardEl.classList.add("board-enter");
+
+		boardEl.animate(
+			[
+				{
+					opacity: "0",
+					transform: "scale(0.5)",
+				},
+				{
+					opacity: "1",
+					transform: "scale(1)",
+				},
+			],
+			{ duration: boardAnimationDuration, easing: "ease", fill: "forwards" },
+		);
 
 		await delay(boardAnimationDuration);
 
