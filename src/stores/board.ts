@@ -1,8 +1,7 @@
-import { ref, computed, onMounted } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useGameStateStore } from "./game_state";
 import { useSettingsStore } from "./settings";
-import { delay } from "@/composables/delay";
 import { tileClearAnim } from "@/fx/tile_clear_anim";
 
 export type TilePosition = {
