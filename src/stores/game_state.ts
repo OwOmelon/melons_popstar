@@ -114,8 +114,6 @@ export const useGameStateStore = defineStore("game-state", () => {
 		);
 
 		await delay(boardAnimationDuration);
-
-		boardEl.classList.remove("board-enter");
 	}
 
 	function checkBoardFinished(): boolean {
