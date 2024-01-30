@@ -23,7 +23,9 @@ async function restart(): Promise<void> {
 <template>
   <BG />
 
-  <div class="relative flex h-screen w-[500px] max-w-[100vw] flex-col">
+  <div
+    class="relative flex h-screen max-h-[850px] min-h-[680px] w-[500px] max-w-[100vw] flex-col"
+  >
     <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
     <GameInfo
@@ -44,8 +46,6 @@ async function restart(): Promise<void> {
   <ModalWrapper :show="game_state.paused">
     <PauseMenu @close="game_state.paused = false" @restart="restart" />
   </ModalWrapper>
-
-  <!-- <d /> -->
 </template>
 
 <style lang="postcss">
@@ -62,7 +62,7 @@ body {
 }
 
 #app {
-  @apply flex flex-col items-center justify-center overflow-hidden;
+  @apply flex min-h-screen flex-col items-center justify-center overflow-hidden;
 }
 
 .shadow-subtle {
