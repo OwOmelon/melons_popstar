@@ -9,7 +9,6 @@ import EndGameBonus from "./components/EndGameBonus.vue";
 import GameOver from "./components/GameOver.vue";
 import Board from "./components/board/Board.vue";
 import ModalWrapper from "./components/ModalWrapper.vue";
-// import d from "./components/_debug.vue";
 
 const game_state = useGameStateStore();
 
