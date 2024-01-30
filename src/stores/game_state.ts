@@ -19,6 +19,10 @@ export const useGameStateStore = defineStore("game-state", () => {
 
 	const endGameBonus = ref<number | null>(null);
 
+	const stagePass = computed<boolean>(() => {
+		return points.value >= goal.value;
+	});
+
 	function resetState(): void {
 		points.value = 0;
 		stage.value = 1;
@@ -143,6 +147,8 @@ export const useGameStateStore = defineStore("game-state", () => {
 		goal,
 
 		endGameBonus,
+
+		stagePass,
 
 		resetState,
 		nextStage,

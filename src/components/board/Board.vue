@@ -78,7 +78,7 @@ async function deduce(): Promise<void> {
 	game_state.points = game_state.points + game_state.endGameBonus!;
 	game_state.endGameBonus = null;
 
-	if (game_state.points >= game_state.goal) {
+	if (game_state.stagePass) {
 		await game_state.newBoardTransition();
 
 		game_state.nextStage();

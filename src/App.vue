@@ -24,12 +24,15 @@ async function restart(): Promise<void> {
 <template>
   <BG />
 
-  <div
-    class="relative flex h-screen w-[500px] max-w-[100vw] flex-col"
-  >
+  <div class="relative flex h-screen w-[500px] max-w-[100vw] flex-col">
     <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
-    <GameInfo />
+    <GameInfo
+      :points="game_state.points"
+      :goal="game_state.goal"
+      :stage="game_state.stage"
+      :stagePass="game_state.stagePass"
+    />
     <EndGameBonus :bonus="game_state.endGameBonus" />
 
     <Board />

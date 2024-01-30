@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
-import { useGameStateStore } from "@/stores/game_state";
+import { ref, watch } from "vue";
 
-const game_state = useGameStateStore();
+const props = defineProps<{
+	points: number;
+	goal: number;
+	stage: number;
+	stagePass: boolean;
+}>();
 
 const key = ref<number>(0);
 const pointsGained = ref<number>(0);
 
-const stagePass = computed<boolean>(() => {
-	return game_state.points >= game_state.goal;
-});
-
 watch(
-	() => game_state.points,
+	() => props.points,
 	(newPts, oldPts) => {
 		if (newPts === 0) return;
 
@@ -24,7 +24,7 @@ watch(
 
 <template>
 	<div class="relative flex justify-between px-5 font-bold">
-		<span>stage: {{ game_state.stage }}</span>
+		<span>stage: {{ stage }}</span>
 
 		<span
 			:class="[
@@ -35,11 +35,11 @@ watch(
 				'absolute left-1/2 top-1/2 mx-auto w-fit -translate-x-1/2 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-4xl transition-colors',
 			]"
 		>
-			{{ game_state.points }}
+			{{ points }}
 		</span>
 
 		<div class="relative">
-			<span>goal: {{ game_state.goal }}</span>
+			<span>goal: {{ goal }}</span>
 
 			<div
 				:class="[
