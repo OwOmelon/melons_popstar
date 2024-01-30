@@ -73,14 +73,18 @@ export const useBoardStore = defineStore("board", () => {
 		adjacentPositions.forEach((adjPos) => {
 			const adjTile = getTile(adjPos);
 
-			if (!adjTile || adjTile.state !== "IDLE") return;
-
-			if (adjTile.color === tile.color) {
-				adjTile.state = "SELECTED";
-
-				addSelectedTilePosition(adjPos);
-				selectTiles(adjPos);
+			if (
+				!adjTile ||
+				adjTile.state !== "IDLE" ||
+				adjTile.color !== tile.color
+			) {
+				return;
 			}
+
+			adjTile.state = "SELECTED";
+
+			addSelectedTilePosition(adjPos);
+			selectTiles(adjPos);
 		});
 	}
 
