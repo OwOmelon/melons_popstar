@@ -2,6 +2,7 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useBoardStore } from "./board";
 import { delay } from "../composables/delay";
+import { tileClearAnim } from "@/fx/tile_clear_anim";
 
 export type GameState = "ONGOING" | "WIN" | "LOSE";
 
@@ -57,6 +58,8 @@ export const useGameStateStore = defineStore("game-state", () => {
 
 				if (tile.state === "IDLE") {
 					tile.state = "CLEARED";
+
+					tileClearAnim(tile.id, -subtrahend)
 
 					endGameBonus.value = endGameBonus.value - subtrahend;
 					subtrahend = subtrahend + 40;
