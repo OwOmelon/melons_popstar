@@ -38,12 +38,14 @@ export const useSettingsStore = defineStore("settings", () => {
 	const areaFontSize = ref(16)
 
 	function changeBoardSize(operation: "inc" | "dec"): void {
-		const operand = operation === "inc" ? 2 : -2;
 		const el = document.getElementById('area')!;
+		const vfxDiv = document.getElementById('vfx')!
+		const operand = operation === "inc" ? 2 : -2;
 
 		areaFontSize.value += operand
 
 		el.style.fontSize = `${areaFontSize.value}px`;
+		vfxDiv.style.fontSize = `${areaFontSize.value}px`;
 	}
 
 	return {
