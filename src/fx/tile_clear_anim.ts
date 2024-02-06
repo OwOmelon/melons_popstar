@@ -74,7 +74,7 @@ function createPtsEl(points: number): HTMLElement {
 	const text: HTMLParagraphElement = document.createElement("p");
 
 	text.innerText = points.toString();
-	text.classList.add("absolute", "text-xl", "font-bold");
+	text.classList.add("absolute", "text-[1em]", "font-bold");
 
 	return text;
 }
