@@ -27,5 +27,13 @@ const settings = useSettingsStore();
 			:toggled="settings.boardShake"
 			@toggle="settings.toggleSetting('board-shake')"
 		/>
+
+		<button
+			type="button"
+			class="shadow-subtle mr-auto mt-3 rounded bg-amber-300 px-3 py-1 text-white transition-transform hover:-translate-y-1"
+			@click="settings.changingBoardSize = true"
+		>
+			change board size
+		</button>
 	</div>
 </template>

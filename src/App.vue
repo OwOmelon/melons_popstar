@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useGameStateStore } from "@/stores/game_state";
+import { useSettingsStore } from "@/stores/settings";
 
 import BG from "./components/BG.vue";
 import PauseBtn from "./components/pause/Btn.vue";
@@ -9,8 +10,10 @@ import EndGameBonus from "./components/EndGameBonus.vue";
 import GameOver from "./components/GameOver.vue";
 import Board from "./components/board/Board.vue";
 import ModalWrapper from "./components/ModalWrapper.vue";
+import ChangeBoardSize from "./components/pause/settings/ChangeBoardSize.vue";
 
 const game_state = useGameStateStore();
+const settings = useSettingsStore();
 
 async function restart(): Promise<void> {
   game_state.gameover = false;
@@ -24,7 +27,8 @@ async function restart(): Promise<void> {
   <BG />
 
   <div
-    class="relative flex h-screen max-h-[850px] min-h-[680px] w-[500px] max-w-[100vw] flex-col"
+    id="area"
+    class="relative flex h-screen max-h-[78ex] min-h-[680px] w-[30em] max-w-[100vw] flex-col"
   >
     <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
@@ -43,7 +47,16 @@ async function restart(): Promise<void> {
     <GameOver v-if="game_state.gameover" @restart="restart" />
   </Transition>
 
-  <ModalWrapper :show="game_state.paused">
+  <Transition name="fade">
+    <ChangeBoardSize
+      v-if="game_state.paused && settings.changingBoardSize"
+      @increase="settings.changeBoardSize('inc')"
+      @decrease="settings.changeBoardSize('dec')"
+      @done="settings.changingBoardSize = false"
+    />
+  </Transition>
+
+  <ModalWrapper :show="game_state.paused && !settings.changingBoardSize">
     <PauseMenu @close="game_state.paused = false" @restart="restart" />
   </ModalWrapper>
 </template>

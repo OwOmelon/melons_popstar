@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { vOnClickOutside } from "@vueuse/components";
+import { useSettingsStore } from "@/stores/settings";
 
 import Settings from "./settings/Settings.vue";
 
@@ -11,6 +12,8 @@ const emit = defineEmits<{
 	restart: [];
 	close: [];
 }>();
+
+const settings = useSettingsStore();
 </script>
 
 <template>

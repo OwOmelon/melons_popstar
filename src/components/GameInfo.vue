@@ -32,7 +32,7 @@ watch(
 					'shadow-subtle shine !border-white bg-amber-400 text-white':
 						stagePass,
 				},
-				'absolute left-1/2 top-1/2 mx-auto w-fit -translate-x-1/2 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-4xl transition-colors',
+				'absolute left-1/2 top-1/2 mx-auto w-fit -translate-x-1/2 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-[2.5em] transition-colors',
 			]"
 		>
 			{{ points }}
