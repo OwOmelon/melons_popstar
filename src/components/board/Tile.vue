@@ -30,12 +30,12 @@ function onClick(): void {
 			{ 'transition-[transform,_border-color,_filter]': selectTransition },
 			state,
 			color,
-			'relative grid aspect-square place-items-center rounded border-2 border-[1px] border-black border-transparent shadow-[0_0_3px] shadow-black/50',
+			'relative grid aspect-square place-items-center rounded border-[0.0625rem] border-[0.125rem] border-black border-transparent shadow-[0_0_0.25rem] shadow-black/50',
 		]"
 		@click="onClick"
 	>
 		<IconStar
-			class="absolute h-full w-full text-white drop-shadow-[0_0_3px_rgba(0,0,0,0.2)]"
+			class="absolute h-full w-full text-white drop-shadow-[0_0_0.25rem_rgba(0,0,0,0.2)]"
 		/>
 	</div>
 </template>
