@@ -1,7 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useBoardStore } from "./board";
-import { delay } from "../composables/delay";
+import { delay } from "../utils/delay";
 import { tileClearAnim } from "@/fx/tile_clear_anim";
 
 export type GameState = "ONGOING" | "WIN" | "LOSE";

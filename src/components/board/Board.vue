@@ -5,7 +5,8 @@ import { vOnClickOutside } from "@vueuse/components";
 import { useBoardStore } from "@/stores/board";
 import { useGameStateStore } from "@/stores/game_state";
 import { useSettingsStore } from "@/stores/settings";
-import { delay } from "@/composables/delay";
+import { delay } from "@/utils/delay";
+import { shakeElement } from "@/utils/shake_element";
 
 import type { TilePosition } from "@/stores/board";
 
@@ -36,37 +37,11 @@ function selectTile(pos: TilePosition) {
 async function clearTile() {
 	await board.organizeBoard();
 
-	if (settings.boardShake) shakeBoard();
+	if (settings.boardShake) shakeElement(boardEl.value!);
 
 	if (game_state.checkBoardFinished()) {
 		deduce();
 	}
-}
-
-function shakeBoard(): void {
-	boardEl.value!.animate(
-		[
-			{
-				transform: "translateX(2px) translateY(-2px)",
-			},
-			{
-				transform: "translateX(-2px) translateY(-2px)",
-			},
-			{
-				transform: "translateX(1px) translateY(1px)",
-			},
-			{
-				transform: "translateX(-1px) translateY(1px)",
-			},
-			{
-				transform: "translateX(3px) translateY(-3px)",
-			},
-			{
-				transform: "translateX(-3px) translateY(-3px)",
-			},
-		],
-		{ duration: 100, fill: "forwards" },
-	);
 }
 
 async function deduce(): Promise<void> {
@@ -89,6 +64,11 @@ async function deduce(): Promise<void> {
 </script>
 
 <template>
+	<div class="fixed left-0 top-0 bg-black p-3 text-white">
+		<p>board width {{ width }}</p>
+		<p>board gap? {{ boardElGap }}</p>
+	</div>
+
 	<div
 		ref="boardEl"
 		id="board"
