@@ -30,7 +30,7 @@ function onClick(): void {
 			{ 'transition-[transform,_border-color,_filter]': selectTransition },
 			state,
 			color,
-			'relative grid aspect-square place-items-center rounded border-2 border-[1px] border-black border-transparent   shadow-[0_0_3px] shadow-black/50',
+			'relative grid aspect-square place-items-center rounded border-2 border-[1px] border-black border-transparent shadow-[0_0_3px] shadow-black/50',
 		]"
 		@click="onClick"
 	>
