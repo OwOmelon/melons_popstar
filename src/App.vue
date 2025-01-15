@@ -43,12 +43,7 @@ async function restart(): Promise<void> {
   >
     <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
-    <GameInfo
-      :points="points"
-      :goal="goal"
-      :stage="stage"
-      :stagePass="stagePass"
-    />
+    <GameInfo />
     <EndGameBonus :bonus="endGameBonus" />
 
     <Board />
