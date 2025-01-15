@@ -1,8 +1,8 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { useGameStateStore } from "./game_state";
+/*import { useGameStateStore } from "./game_state";
 import { useSettingsStore } from "./settings";
-import { tileClearAnim } from "@/fx/tile_clear_anim";
+import { tileClearAnim } from "../utils/tile_clear_anim";*/
 
 export type TilePosition = {
 	x: number;
@@ -20,8 +20,8 @@ export type Tile = {
 };
 
 export const useBoardStore = defineStore("board", () => {
-	const game_state = useGameStateStore();
-	const settings = useSettingsStore();
+	/*const game_state = useGameStateStore();
+	const settings = useSettingsStore();*/
 
 	// --------------------
 
@@ -119,10 +119,10 @@ export const useBoardStore = defineStore("board", () => {
 					tile.state = "CLEARED";
 					organizedColumn.unshift(tile);
 
-					if (settings.tileClearAnim) tileClearAnim(tile.id, pointsEarned);
+					// if (settings.tileClearAnim) tileClearAnim(tile.id, pointsEarned);
 
 					pointsEarned += 10;
-					game_state.points += pointsEarned;
+					// game_state.points += pointsEarned;
 				} else {
 					organizedColumn.push(tile);
 				}

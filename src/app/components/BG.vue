@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useGameStateStore } from "@/stores/game_state";
-import { useSettingsStore } from "@/stores/settings";
+import { storeToRefs } from "pinia";
+import { useGameStateStore } from "@/gamestate/stores/gamestate";
+import { useSettingsStore } from "@/settings/stores/settings";
 
-const game_state = useGameStateStore();
-const settings = useSettingsStore();
+const { gameover } = storeToRefs(useGameStateStore());
+const { bgAnim } = storeToRefs(useSettingsStore());
 
 const opacity = computed(() => {
-	return game_state.gameover ? "opacity-20" : "opacity-75";
+	return gameover ? "opacity-20" : "opacity-75";
 });
 </script>
 
 <template>
 	<div
 		:class="[
-			game_state.gameover ? 'bg-slate-700' : 'bg-amber-100',
+			gameover ? 'bg-slate-700' : 'bg-amber-100',
 			'pointer-events-none absolute left-0 top-0 z-[-5] h-screen w-screen overflow-hidden transition-colors duration-1000',
 		]"
 	>
@@ -23,7 +24,7 @@ const opacity = computed(() => {
 		>
 			<div
 				:class="[
-					{ scroll: settings.bgAnim },
+					{ scroll: bgAnim },
 					opacity,
 					'bg-image absolute h-[200%] w-[200%] transition-opacity duration-1000',
 				]"

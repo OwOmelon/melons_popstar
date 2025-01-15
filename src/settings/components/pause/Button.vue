@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { useGameStateStore } from "@/stores/game_state";
 import PauseIcon from "~icons/solar/pause-bold";
 
-const game_state = useGameStateStore();
+/*import { useGameStateStore } from "@/stores/game_state";
+
+const game_state = useGameStateStore();*/
+
+// !!! MOVE game_state.paused TO SETTINGS STORE
 </script>
 
 <template>
-	<button type="button" @click="game_state.paused = !game_state.paused">
+	<button type="button" @click="">
 		<PauseIcon />
 	</button>
 </template>

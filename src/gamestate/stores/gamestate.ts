@@ -1,13 +1,13 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { useBoardStore } from "./board";
+/*import { useBoardStore } from "./board";
 import { delay } from "../utils/delay";
-import { tileClearAnim } from "@/fx/tile_clear_anim";
+import { tileClearAnim } from "@/fx/tile_clear_anim";*/
 
 export type GameState = "ONGOING" | "WIN" | "LOSE";
 
 export const useGameStateStore = defineStore("game-state", () => {
-	const board = useBoardStore();
+	// const board = useBoardStore();
 
 	// --------------------
 

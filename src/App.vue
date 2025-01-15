@@ -1,25 +1,36 @@
 <script setup lang="ts">
-import { useGameStateStore } from "@/stores/game_state";
-import { useSettingsStore } from "@/stores/settings";
+import BG from "@/app/components/BG.vue";
 
-import BG from "./components/BG.vue";
-import PauseBtn from "./components/pause/Btn.vue";
-import PauseMenu from "./components/pause/Menu.vue";
-import GameInfo from "./components/GameInfo.vue";
-import EndGameBonus from "./components/EndGameBonus.vue";
-import GameOver from "./components/GameOver.vue";
-import Board from "./components/board/Board.vue";
-import ModalWrapper from "./components/ModalWrapper.vue";
-import ChangeBoardSize from "./components/pause/settings/ChangeBoardSize.vue";
+import PauseBtn from "@/settings/components/pause/Button.vue";
+import PauseMenu from "@/settings/components/pause/Menu.vue";
+import ChangeBoardSize from "@/settings/components/ChangeBoardSize.vue";
 
-const game_state = useGameStateStore();
-const settings = useSettingsStore();
+import GameInfo from "@/gamestate/components/GameInfo.vue";
+import EndGameBonus from "@/gamestate/components/EndGameBonus.vue";
+import GameOver from "@/gamestate/components/GameOver.vue";
+
+import Board from "@/board/components/Board.vue";
+import ModalWrapper from "@/app/components/ModalWrapper.vue";
+
+// ----------
+
+import { storeToRefs } from "pinia";
+
+import { useGameStateStore } from "@/gamestate/stores/gamestate";
+import { useSettingsStore } from "@/settings/stores/settings";
+
+const { gameover, points, goal, stage, stagePass, endGameBonus, paused } =
+  storeToRefs(useGameStateStore());
+const { newBoardTransition, resetState } = useGameStateStore();
+
+const { changingBoardSize } = storeToRefs(useSettingsStore());
+const { changeBoardSize } = useSettingsStore();
 
 async function restart(): Promise<void> {
-  game_state.gameover = false;
+  gameover.value = false;
 
-  await game_state.newBoardTransition();
-  game_state.resetState();
+  await newBoardTransition();
+  resetState();
 }
 </script>
 
@@ -33,31 +44,31 @@ async function restart(): Promise<void> {
     <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
     <GameInfo
-      :points="game_state.points"
-      :goal="game_state.goal"
-      :stage="game_state.stage"
-      :stagePass="game_state.stagePass"
+      :points="points"
+      :goal="goal"
+      :stage="stage"
+      :stagePass="stagePass"
     />
-    <EndGameBonus :bonus="game_state.endGameBonus" />
+    <EndGameBonus :bonus="endGameBonus" />
 
     <Board />
   </div>
 
   <Transition name="slow-fade">
-    <GameOver v-if="game_state.gameover" @restart="restart" />
+    <GameOver v-if="gameover" @restart="restart" />
   </Transition>
 
   <Transition name="fade">
     <ChangeBoardSize
-      v-if="game_state.paused && settings.changingBoardSize"
-      @increase="settings.changeBoardSize('inc')"
-      @decrease="settings.changeBoardSize('dec')"
-      @done="settings.changingBoardSize = false"
+      v-if="paused && changingBoardSize"
+      @increase="changeBoardSize('inc')"
+      @decrease="changeBoardSize('dec')"
+      @done="changingBoardSize = false"
     />
   </Transition>
 
-  <ModalWrapper :show="game_state.paused && !settings.changingBoardSize">
-    <PauseMenu @close="game_state.paused = false" @restart="restart" />
+  <ModalWrapper :show="paused && !changingBoardSize">
+    <PauseMenu @close="paused = false" @restart="restart" />
   </ModalWrapper>
 </template>
 

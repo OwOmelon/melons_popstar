@@ -1,42 +1,27 @@
-<script setup lang="ts">
-import { ref, computed } from "vue";
-import { useElementSize } from "@vueuse/core";
-import { vOnClickOutside } from "@vueuse/components";
-import { useBoardStore } from "@/stores/board";
-import { useGameStateStore } from "@/stores/game_state";
-import { useSettingsStore } from "@/stores/settings";
-import { delay } from "@/utils/delay";
-import { shakeElement } from "@/utils/shake_element";
-
-import type { TilePosition } from "@/stores/board";
-
+=<script setup lang="ts">
 import Tile from "./Tile.vue";
 
-const board = useBoardStore();
-const game_state = useGameStateStore();
-const settings = useSettingsStore();
+import { ref, useTemplateRef } from "vue";
+import { storeToRefs } from "pinia";
+import { vOnClickOutside } from "@vueuse/components";
+import { useBoardStore } from "../stores/board";
 
-const boardEl = ref<HTMLElement | null>(null);
-const { width } = useElementSize(boardEl);
+import type { TilePosition } from "../stores/board";
 
-const boardElGap = computed<string>(() => {
-	return `${width.value / 80}px`;
-});
+const { board } = storeToRefs(useBoardStore())
+const { deselectAllTiles, selectTiles, organizeBoard }  = useBoardStore()
 
-const columnWidth = computed<string>(() => {
-	return `calc(10% - ${boardElGap.value})`;
-});
-
-// ----------
+const boardEl = useTemplateRef<HTMLElement>("boardEl");
 
 function selectTile(pos: TilePosition) {
-	board.deselectAllTiles();
-	board.selectTiles(pos);
+	deselectAllTiles();
+	selectTiles(pos);
 }
 
 async function clearTile() {
-	await board.organizeBoard();
+	await organizeBoard();
 
+	// MOVE LOGIC BELOW OUTSIDE
 	if (settings.boardShake) shakeElement(boardEl.value!);
 
 	if (game_state.checkBoardFinished()) {
@@ -45,6 +30,7 @@ async function clearTile() {
 }
 
 async function deduce(): Promise<void> {
+	// MOVE LOGIC BELOW OUTSIDE
 	game_state.resetEndGameBonus();
 
 	await delay(1000);
@@ -65,31 +51,28 @@ async function deduce(): Promise<void> {
 
 <template>
 	<div class="fixed left-0 top-0 bg-black p-3 text-white">
-		<p>board width {{ width }}</p>
-		<p>board gap? {{ boardElGap }}</p>
+		<!-- <p>board width {{ width }}</p>
+		<p>board gap? {{ boardElGap }}</p> -->
 	</div>
 
 	<div
 		ref="boardEl"
 		id="board"
-		:style="{ gap: boardElGap }"
-		class="relative flex items-center justify-center gap-2 rounded p-2"
+		class="relative flex items-center justify-center gap-2 rounded p-2 gap-[0.3625rem]"
 		v-on-click-outside="
 			() => {
-				board.deselectAllTiles();
+				deselectAllTiles();
 			}
 		"
-		@click.self="board.deselectAllTiles()"
+		@click.self="deselectAllTiles()"
 	>
 		<div
-			v-for="(column, x) in board.board"
-			:style="{ width: columnWidth }"
-			class="relative flex flex-col gap-[inherit]"
+			v-for="(column, x) in board"
+			class="relative flex flex-col gap-[inherit] w-10"
 		>
 			<Tile
 				v-for="(tile, y) in column"
 				v-bind="tile"
-				:select-transition="settings.tileSelectAnim"
 				:key="tile.id"
 				@select="selectTile({ x, y })"
 				@explode="clearTile"

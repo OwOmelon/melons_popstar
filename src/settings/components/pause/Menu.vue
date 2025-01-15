@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { vOnClickOutside } from "@vueuse/components";
-import { useSettingsStore } from "@/stores/settings";
-
-import Settings from "./settings/Settings.vue";
+import Settings from "../Settings.vue";
 
 import CloseIcon from "~icons/material-symbols/close-small-rounded";
 import RetryIcon from "~icons/material-symbols/replay-rounded";
 import PlayIcon from "~icons/material-symbols/play-arrow-rounded";
 
+import { vOnClickOutside } from "@vueuse/components";
+
 const emit = defineEmits<{
 	restart: [];
 	close: [];
 }>();
-
-const settings = useSettingsStore();
 </script>
 
 <template>
