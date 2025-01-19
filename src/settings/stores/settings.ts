@@ -11,6 +11,8 @@ type Setting =
 export const useSettingsStore = defineStore("settings", () => {
 	const paused = ref(false)
 
+	// !!! REWORK TOGGLES
+
 	const bgAnim = useStorage("bg-anim", true);
 	const boardShake = useStorage("board-shake", true);
 	const tileSelectAnim = useStorage("tile-select-anim", true);

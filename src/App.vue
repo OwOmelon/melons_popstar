@@ -39,11 +39,11 @@ const { changeBoardSize } = useSettingsStore();
 const boardRef = useTemplateRef<typeof Board>("boardRef");
 
 function onTileClear(tilesCleared: number) {
-  // ADD POINTS
-  // ADD TILE CLEAR ANIM
-  // SHAKE BOARD (SHOULD BE DONE IN BOARD COMPONENT?)
-  // CHECK BOARD FINISHED
-  // IF FINISHED, RUN END GAME LOGIC
+  // !!! ADD POINTS ---
+  // !!! ADD TILE CLEAR ANIM
+  // !!! SHAKE BOARD (SHOULD BE DONE IN BOARD COMPONENT?) ---
+  // !!! CHECK BOARD FINISHED ---
+  // !!! IF FINISHED, RUN END GAME LOGIC ---
 
   addPoints(tilesCleared);
 

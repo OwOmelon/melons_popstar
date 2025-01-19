@@ -10,6 +10,8 @@ export const useGameStateStore = defineStore("game-state", () => {
 	const stage = ref<number>(1);
 	const goal = ref<number>(1000);
 
+	// !!! REWORK END GAME BONUS LOGIC
+
 	const endGameBonus = ref<number | null>(null);
 
 	const stagePass = computed<boolean>(() => {
