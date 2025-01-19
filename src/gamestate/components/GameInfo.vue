@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { useTemplateRef, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useGameStateStore } from "../stores/gamestate";
 
 const { points, goal, stage, stagePass } = storeToRefs(useGameStateStore());
 
-// !!! IS THERE REALLY A POINT TO pointsGainedEl_Key ???
-const pointsGainedEl_Key = ref<number>(0);
-const pointsGained = ref<number>(0);
+const pointsGainedEl = useTemplateRef<HTMLElement>("pointsGainedEl");
 
 watch(points, (newPts, oldPts) => {
-	if (newPts === 0) return;
+	if (newPts === 0 || !pointsGainedEl.value) return;
 
-	pointsGainedEl_Key.value++;
-	pointsGained.value = newPts - oldPts;
+	pointsGainedEl.value.classList.remove("jump");
+
+	setTimeout(() => {
+		pointsGainedEl.value!.classList.add("jump");
+	}, 0);
+
+	pointsGainedEl.value.innerText = `+ ${newPts - oldPts}`;
 });
 </script>
 
@@ -47,30 +50,31 @@ watch(points, (newPts, oldPts) => {
 		<div
 			class="absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-[calc(50%_-_2rem)] place-items-center"
 		>
-			<span :key="pointsGainedEl_Key" class="jump absolute whitespace-nowrap text-xl">
-				+ {{ pointsGained }}
-			</span>
+			<span
+				ref="pointsGainedEl"
+				class="absolute whitespace-nowrap text-xl opacity-0"
+			/>
 		</div>
 	</div>
 </template>
 
 <style scoped>
 .jump {
-	animation: jump 1s ease forwards;
+	animation: jump 1s forwards;
 }
 
 @keyframes jump {
-	0%,
-	50% {
-		transform: translateY(0);
+	0% {
+		transform: translateY(1rem);
 	}
 
 	25% {
-		transform: translateY(-0.5rem);
+		transform: translateY(0);
 		opacity: 1;
 	}
 
 	100% {
+		transform: translateY(0);
 		opacity: 0;
 	}
 }
