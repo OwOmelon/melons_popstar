@@ -3,6 +3,7 @@ import Tile from "./Tile.vue";
 
 import { useTemplateRef } from "vue";
 import { storeToRefs } from "pinia";
+import { type OnClickOutsideHandler, onClickOutside } from "@vueuse/core";
 import { type TilePosition, useBoardStore } from "../stores/board";
 import { shakeElement } from "@/app/utils/shake_element";
 
@@ -11,13 +12,14 @@ const emit = defineEmits<{
 }>();
 
 const { board } = storeToRefs(useBoardStore());
-const { unselectSelectedTiles, selectTile, organizeBoard } = useBoardStore();
+const { deselectTiles, selectTile, organizeBoard } = useBoardStore();
 
 const boardEl = useTemplateRef<HTMLElement>("boardEl");
 
 function onTileSelect(pos: TilePosition) {
-	unselectSelectedTiles();
+	deselectTiles();
 	selectTile(pos);
+	addTileDeselectListener();
 }
 
 async function onTileClear() {
@@ -26,16 +28,33 @@ async function onTileClear() {
 	if (boardEl.value) shakeElement(boardEl.value);
 }
 
-window.addEventListener("mousedown", (e) => {
-	if (
-		e.target &&
-		(e.target === boardEl.value || !boardEl.value?.contains(e.target as Node))
-	) {
-		unselectSelectedTiles();
+let boardEl_ClickOutside_Listener: OnClickOutsideHandler | null = null;
 
-		console.log(e.target);
-	}
-});
+function windowPointerUp_Handler(e: PointerEvent) {
+	if (e.button !== 0 || e.target !== boardEl.value) return;
+
+	console.log("BOARD CLICK-SELF: TILE UNSELECT");
+
+	deselectTiles();
+	removeTileDeselectListener(e);
+}
+
+function addTileDeselectListener() {
+	boardEl.value?.addEventListener("pointerup", windowPointerUp_Handler);
+
+	boardEl_ClickOutside_Listener = onClickOutside(boardEl, (e) => {
+		console.log("BOARD CLICK-OUTSIDE: TILE UNSELECT");
+
+		deselectTiles();
+		removeTileDeselectListener(e);
+	});
+}
+
+function removeTileDeselectListener(e: PointerEvent) {
+	boardEl_ClickOutside_Listener?.(e);
+	boardEl_ClickOutside_Listener = null;
+	boardEl.value?.removeEventListener("pointerup", windowPointerUp_Handler);
+}
 </script>
 
 <template>
