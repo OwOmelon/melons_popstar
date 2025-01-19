@@ -8,7 +8,7 @@ const emit = defineEmits<{
 
 <template>
 	<div
-		class="bg-red-400 px-4 py-2 rounded border-2 border-white shadow-subtle fixed left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-5"
+		class="shadow-subtle fixed left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-5 rounded border-2 border-white bg-red-400 px-4 py-2"
 	>
 		<span class="text-4xl font-bold text-white">GAME OVER</span>
 		<button

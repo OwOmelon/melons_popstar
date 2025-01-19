@@ -11,6 +11,7 @@ export const useGameStateStore = defineStore("game-state", () => {
 
 	// --------------------
 
+	// !!! MOVE paused TO SETTINGS STORE
 	const paused = ref<boolean>(false);
 	const gameover = ref<boolean>(false);
 
@@ -24,10 +25,16 @@ export const useGameStateStore = defineStore("game-state", () => {
 		return points.value >= goal.value;
 	});
 
-	function resetState(): void {
-		points.value = 0;
-		stage.value = 1;
-		goal.value = 1000;
+	function addPoints(tilesCleared: number) {
+		// CREATE MATH FORMUAL FOR totalPoints
+		const inc = 10;
+		let pointsGained = 0;
+
+		for (let x = 1; x <= tilesCleared; x++) {
+			pointsGained += x * inc;
+		}
+
+		points.value += pointsGained;
 	}
 
 	function nextStage(): void {
@@ -36,7 +43,7 @@ export const useGameStateStore = defineStore("game-state", () => {
 	}
 
 	function addEndGameBonus(): void {
-		points.value = points.value + (endGameBonus.value || 0);
+		points.value = points.value + (endGameBonus.value ?? 0);
 		resetEndGameBonus();
 	}
 
@@ -44,7 +51,14 @@ export const useGameStateStore = defineStore("game-state", () => {
 		endGameBonus.value = 2000;
 	}
 
-	async function getEndGameBonus(): Promise<void> {
+	function resetState(): void {
+		points.value = 0;
+		stage.value = 1;
+		goal.value = 1000;
+		gameover.value = false;
+	}
+
+	/*async function getEndGameBonus(): Promise<void> {
 		if (!endGameBonus.value) return;
 
 		const delayAmount = 400;
@@ -59,7 +73,7 @@ export const useGameStateStore = defineStore("game-state", () => {
 				if (tile.state === "IDLE") {
 					tile.state = "CLEARED";
 
-					tileClearAnim(tile.id, -subtrahend)
+					tileClearAnim(tile.id, -subtrahend);
 
 					endGameBonus.value = endGameBonus.value - subtrahend;
 					subtrahend = subtrahend + 40;
@@ -70,9 +84,9 @@ export const useGameStateStore = defineStore("game-state", () => {
 		}
 
 		return;
-	}
+	}*/
 
-	async function newBoardTransition(): Promise<void> {
+	/*async function newBoardTransition(): Promise<void> {
 		const boardEl = document.getElementById("board")!;
 		const boardAnimationDuration = 3000;
 		const allTilesCleared = board.board.every((column) => {
@@ -135,7 +149,7 @@ export const useGameStateStore = defineStore("game-state", () => {
 
 			return !hasClearableTile;
 		});
-	}
+	}*/
 
 	// --------------------
 
@@ -151,12 +165,13 @@ export const useGameStateStore = defineStore("game-state", () => {
 
 		stagePass,
 
+		addPoints,
 		resetState,
 		nextStage,
 		addEndGameBonus,
 		resetEndGameBonus,
-		getEndGameBonus,
+		/*getEndGameBonus,
 		newBoardTransition,
-		checkBoardFinished,
+		checkBoardFinished,*/
 	};
 });

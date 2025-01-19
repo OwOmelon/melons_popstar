@@ -10,7 +10,9 @@ const emit = defineEmits<{
 	explode: [];
 }>();
 
-function onClick(): void {
+function onMousedown(e: MouseEvent): void {
+	if (e.button !== 0) return;
+
 	if (props.state === "SELECTED") {
 		emit("explode");
 	} else {
@@ -27,7 +29,7 @@ function onClick(): void {
 			color,
 			'relative grid aspect-square place-items-center rounded border-[0.0625rem] border-[0.125rem] border-black border-transparent shadow-[0_0_0.25rem] shadow-black/50',
 		]"
-		@click="onClick"
+		@mousedown="onMousedown"
 	>
 		<IconStar
 			class="absolute h-full w-full text-white drop-shadow-[0_0_0.25rem_rgba(0,0,0,0.2)]"
@@ -58,8 +60,12 @@ function onClick(): void {
 
 /* STATES */
 
-.SELECTED {
+/* .SELECTED {
 	@apply scale-[1.1] border-white brightness-125;
+} */
+
+.SELECTED {
+	@apply border-white;
 }
 
 .EXPLODING {
