@@ -1,4 +1,3 @@
-=
 <script setup lang="ts">
 import Tile from "./Tile.vue";
 
