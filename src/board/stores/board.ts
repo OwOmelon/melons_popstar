@@ -46,7 +46,7 @@ export const useBoardStore = defineStore("board", () => {
 
 	// --------------------
 
-	async function unselectSelectedTiles(): Promise<void> {
+	async function deselectTiles(): Promise<void> {
 		board.value.forEach((column) => {
 			column.forEach((tile) => {
 				if (tile.state === "SELECTED") tile.state = "IDLE";
@@ -147,7 +147,7 @@ export const useBoardStore = defineStore("board", () => {
 		board,
 		resetBoard,
 
-		unselectSelectedTiles,
+		deselectTiles,
 		selectTile,
 		organizeBoard,
 
