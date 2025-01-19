@@ -26,12 +26,12 @@ import { delay } from "@/app/utils/delay";
 const { board } = storeToRefs(useBoardStore());
 const { resetBoard, getTile, isBoardCleared } = useBoardStore();
 
-const { gameover, paused, points, endGameBonus, stagePass } =
+const { gameover, points, endGameBonus, stagePass } =
   storeToRefs(useGameStateStore());
 const { resetState, addPoints, resetEndGameBonus, nextStage } =
   useGameStateStore();
 
-const { changingBoardSize } = storeToRefs(useSettingsStore());
+const { paused, changingBoardSize } = storeToRefs(useSettingsStore());
 const { changeBoardSize } = useSettingsStore();
 
 // ----------

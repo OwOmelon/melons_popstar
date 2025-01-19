@@ -9,6 +9,8 @@ type Setting =
 	| "board-shake";
 
 export const useSettingsStore = defineStore("settings", () => {
+	const paused = ref(false)
+
 	const bgAnim = useStorage("bg-anim", true);
 	const boardShake = useStorage("board-shake", true);
 	const tileSelectAnim = useStorage("tile-select-anim", true);
@@ -49,6 +51,8 @@ export const useSettingsStore = defineStore("settings", () => {
 	}
 
 	return {
+		paused,
+
 		bgAnim,
 		tileSelectAnim,
 		tileClearAnim,
