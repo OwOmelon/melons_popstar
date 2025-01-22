@@ -12,7 +12,7 @@ import GameOver from "@/gamestate/components/GameOver.vue";
 import Board from "@/board/components/Board.vue";
 import ModalWrapper from "@/app/components/ModalWrapper.vue";
 
-import { useTemplateRef } from "vue";
+import { useTemplateRef, ref } from "vue";
 import { storeToRefs } from "pinia";
 
 import { useBoardStore } from "@/board/stores/board";
@@ -26,10 +26,8 @@ import { delay } from "@/app/utils/delay";
 const { board } = storeToRefs(useBoardStore());
 const { resetBoard, getTile, isBoardCleared } = useBoardStore();
 
-const { gameover, points, endGameBonus, stagePass } =
-  storeToRefs(useGameStateStore());
-const { resetState, addPoints, resetEndGameBonus, nextStage } =
-  useGameStateStore();
+const { gameover, points, stagePass } = storeToRefs(useGameStateStore());
+const { resetState, addPoints, nextStage } = useGameStateStore();
 
 const { paused, changingBoardSize } = storeToRefs(useSettingsStore());
 const { changeBoardSize } = useSettingsStore();
@@ -39,97 +37,105 @@ const { changeBoardSize } = useSettingsStore();
 const boardRef = useTemplateRef<typeof Board>("boardRef");
 
 function onTileClear(tilesCleared: number) {
-  // !!! ADD POINTS ---
-  // !!! ADD TILE CLEAR ANIM
-  // !!! SHAKE BOARD (SHOULD BE DONE IN BOARD COMPONENT?) ---
-  // !!! CHECK BOARD FINISHED ---
-  // !!! IF FINISHED, RUN END GAME LOGIC ---
+	// !!! ADD POINTS ---
+	// !!! ADD TILE CLEAR ANIM
+	// !!! SHAKE BOARD (SHOULD BE DONE IN BOARD COMPONENT?) ---
+	// !!! CHECK BOARD FINISHED ---
+	// !!! IF FINISHED, RUN END GAME LOGIC ---
 
-  addPoints(tilesCleared);
+	addPoints(tilesCleared);
 
-  if (!isBoardCleared()) onBoardClear();
+	if (!isBoardCleared()) onBoardClear();
 }
 
 async function onBoardClear(): Promise<void> {
-  resetEndGameBonus();
+	boardClearBonus.value = boardClearBonus_Max;
 
-  await delay(1000);
-  await getBoardClearBonus();
+	await delay(1000);
+	await getBoardClearBonus();
 
-  points.value += endGameBonus.value!;
-  endGameBonus.value = null;
+	points.value += boardClearBonus.value!;
+	boardClearBonus.value = -1;
 
-  if (stagePass.value) {
-    resetBoard();
-    nextStage();
-  } else {
-    gameover.value = true;
-  }
+	if (stagePass.value) {
+		resetBoard();
+		nextStage();
+	} else {
+		gameover.value = true;
+	}
 }
 
 function restartGame() {
-  resetState();
-  resetBoard();
+	resetState();
+	resetBoard();
 }
 
+// ===============
+
+const boardClearBonus_Max = 2000;
+const boardClearBonus = ref<number>(-1);
+
 async function getBoardClearBonus(): Promise<void> {
-  if (!endGameBonus.value) return;
+	if (boardClearBonus.value === -1) return;
 
-  const delayAmount = 400;
-  let subtrahend = 20;
+	const delayAmount = 400;
+	let subtrahend = 20;
+	let tilesChecked = 0;
 
-  for (let y = 0; y < 10; y++) {
-    for (let x = 0; x < board.value.length; x++) {
-      if (endGameBonus.value <= 0) return;
+	for (let y = 0; y < 10; y++) {
+		for (let x = 0; x < board.value.length; x++) {
+			if (boardClearBonus.value <= 0) break;
 
-      const tile = getTile({ x, y })!;
+			const tile = getTile({ x, y })!;
 
-      if (tile.state === "IDLE") {
-        tile.state = "CLEARED";
+			if (tile.state === "IDLE") {
+				tile.state = "CLEARED";
 
-        endGameBonus.value = endGameBonus.value - subtrahend;
-        subtrahend = subtrahend + 40;
+				boardClearBonus.value = boardClearBonus.value - subtrahend;
+				subtrahend = subtrahend + 40;
 
-        await delay(delayAmount);
-      }
-    }
-  }
+				tilesChecked++;
 
-  return;
+				await delay(delayAmount);
+			}
+		}
+	}
+
+	return;
 }
 </script>
 
 <template>
-  <BG />
+	<BG />
 
-  <div
-    id="area"
-    class="relative flex h-screen max-h-[78ex] min-h-[680px] w-[30em] max-w-[100vw] flex-col"
-  >
-    <PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
+	<div
+		id="area"
+		class="relative flex h-screen max-h-[78ex] min-h-[680px] w-[30em] max-w-[100vw] flex-col"
+	>
+		<PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
-    <GameInfo />
-    <EndGameBonus />
+		<GameInfo />
+		<EndGameBonus :board-clear-bonus="boardClearBonus" />
 
-    <Board ref="boardRef" @on-tile-clear="onTileClear" />
-  </div>
+		<Board ref="boardRef" @on-tile-clear="onTileClear" />
+	</div>
 
-  <Transition name="slow-fade">
-    <GameOver v-if="gameover" @restart="restartGame" />
-  </Transition>
+	<Transition name="slow-fade">
+		<GameOver v-if="gameover" @restart="restartGame" />
+	</Transition>
 
-  <Transition name="fade">
-    <ChangeBoardSize
-      v-if="paused && changingBoardSize"
-      @increase="changeBoardSize('inc')"
-      @decrease="changeBoardSize('dec')"
-      @done="changingBoardSize = false"
-    />
-  </Transition>
+	<Transition name="fade">
+		<ChangeBoardSize
+			v-if="paused && changingBoardSize"
+			@increase="changeBoardSize('inc')"
+			@decrease="changeBoardSize('dec')"
+			@done="changingBoardSize = false"
+		/>
+	</Transition>
 
-  <ModalWrapper :show="paused && !changingBoardSize">
-    <PauseMenu @close="paused = false" @restart="restartGame" />
-  </ModalWrapper>
+	<ModalWrapper :show="paused && !changingBoardSize">
+		<PauseMenu @close="paused = false" @restart="restartGame" />
+	</ModalWrapper>
 </template>
 
 <style lang="postcss">
@@ -138,44 +144,44 @@ async function getBoardClearBonus(): Promise<void> {
 *,
 *::before,
 *::after {
-  @apply m-0 box-border p-0;
+	@apply m-0 box-border p-0;
 }
 
 body {
-  @apply font-["Poppins",_sans-serrif];
+	@apply font-["Poppins",_sans-serrif];
 }
 
 #app {
-  @apply flex min-h-screen flex-col items-center justify-center overflow-hidden;
+	@apply flex min-h-screen flex-col items-center justify-center overflow-hidden;
 }
 
 .shadow-subtle {
-  @apply shadow shadow-black/25;
+	@apply shadow shadow-black/25;
 }
 </style>
 
 <style lang="scss">
 .fade {
-  &-enter-active,
-  &-leave-active {
-    transition: opacity 150ms;
-  }
+	&-enter-active,
+	&-leave-active {
+		transition: opacity 150ms;
+	}
 
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
+	&-enter-from,
+	&-leave-to {
+		opacity: 0;
+	}
 }
 
 .slow-fade {
-  &-enter-active,
-  &-leave-active {
-    transition: opacity 1s;
-  }
+	&-enter-active,
+	&-leave-active {
+		transition: opacity 1s;
+	}
 
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
+	&-enter-from,
+	&-leave-to {
+		opacity: 0;
+	}
 }
 </style>
