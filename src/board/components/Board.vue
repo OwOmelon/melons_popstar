@@ -22,8 +22,9 @@ function onTileSelect(pos: TilePosition) {
 	addTileDeselectListener();
 }
 
-async function onTileClear() {
+async function onTileClear(e: PointerEvent) {
 	emit("on-tile-clear", organizeBoard());
+	removeTileDeselectListener(e);
 
 	if (boardEl.value) shakeElement(boardEl.value);
 }
@@ -40,6 +41,8 @@ function windowPointerUp_Handler(e: PointerEvent) {
 }
 
 function addTileDeselectListener() {
+	if (boardEl_ClickOutside_Listener) return;
+
 	boardEl.value?.addEventListener("pointerup", windowPointerUp_Handler);
 
 	boardEl_ClickOutside_Listener = onClickOutside(boardEl, (e) => {
@@ -72,7 +75,7 @@ function removeTileDeselectListener(e: PointerEvent) {
 				v-bind="tile"
 				:key="tile.id"
 				@select="onTileSelect({ x, y })"
-				@explode="onTileClear"
+				@clear="onTileClear"
 			/>
 		</div>
 	</div>

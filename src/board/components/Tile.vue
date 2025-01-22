@@ -7,14 +7,18 @@ const props = defineProps<Tile>();
 
 const emit = defineEmits<{
 	select: [];
-	explode: [];
+	clear: [PointerEvent];
 }>();
 
-function onClick(): void {
-	if (props.state === "SELECTED") {
-		emit("explode");
-	} else {
-		emit("select");
+function onPointerUp(e: PointerEvent): void {
+	switch (props.state) {
+		case "IDLE":
+			emit("select");
+			break;
+
+		case "SELECTED":
+			emit("clear", e);
+			break;
 	}
 }
 </script>
@@ -27,7 +31,7 @@ function onClick(): void {
 			color,
 			'relative grid aspect-square place-items-center rounded border-[0.0625rem] border-[0.125rem] border-black border-transparent shadow-[0_0_0.25rem] shadow-black/50',
 		]"
-		@mousedown="onClick"
+		@pointerdown="onPointerUp"
 	>
 		<IconStar
 			class="absolute h-full w-full text-white drop-shadow-[0_0_0.25rem_rgba(0,0,0,0.2)]"
