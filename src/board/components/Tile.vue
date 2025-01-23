@@ -24,18 +24,18 @@ function onPointerUp(e: PointerEvent): void {
 </script>
 
 <template>
-	<div
-		:id="id"
-		:class="[
-			state,
-			color,
-			'relative grid aspect-square w-10 place-items-center rounded border-[0.125rem] border-transparent shadow-[0_0_0.25rem] shadow-black/50',
-		]"
-		@pointerdown.prevent="onPointerUp"
-	>
-		<IconStar
-			class="absolute h-full w-full text-white drop-shadow-[0_0_0.25rem_rgba(0,0,0,0.2)]"
-		/>
+	<div :id="id" class="TILE" @pointerdown.prevent="onPointerUp">
+		<div
+			:class="[
+				state,
+				color,
+				'relative grid aspect-square place-items-center rounded border-[0.125rem] border-transparent shadow-[0_0_0.25rem] shadow-black/50',
+			]"
+		>
+			<IconStar
+				class="absolute h-full w-full text-white drop-shadow-[0_0_0.25rem_rgba(0,0,0,0.2)]"
+			/>
+		</div>
 	</div>
 </template>
 

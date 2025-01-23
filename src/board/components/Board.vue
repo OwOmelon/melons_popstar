@@ -61,11 +61,11 @@ function removeTileDeselectListener(e: PointerEvent) {
 	<div
 		ref="boardEl"
 		id="board"
-		class="relative flex items-center justify-center gap-[0.3625rem] rounded p-2 mt-auto"
+		class="relative mt-auto flex aspect-square items-center justify-center"
 	>
 		<div
 			v-for="(column, x) in board"
-			class="relative flex flex-col gap-[inherit]"
+			class="column relative flex h-full w-[10%] flex-col gap-[inherit]"
 		>
 			<Tile
 				v-for="(tile, y) in column"
@@ -77,3 +77,9 @@ function removeTileDeselectListener(e: PointerEvent) {
 		</div>
 	</div>
 </template>
+
+<style scoped lang="postcss">
+:deep(.TILE) {
+	@apply m-[0.18125rem];
+}
+</style>
