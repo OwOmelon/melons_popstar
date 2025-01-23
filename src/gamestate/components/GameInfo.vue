@@ -29,9 +29,10 @@ watch(points, (newPts, oldPts) => {
 		<div
 			:class="[
 				{
-					'shadow-subtle glint !border-white bg-amber-400 text-white': stagePass,
+					'shadow-subtle glint !border-white bg-amber-400 text-white duration-500':
+						stagePass,
 				},
-				'absolute right-0 top-1/2 col-start-2 row-start-1 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-[2.25em] transition-colors mobile-m:right-1/2 mobile-m:translate-x-1/2',
+				'absolute right-0 top-1/2 col-start-2 row-start-1 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-[2.25em] transition-colors duration-1000 mobile-m:right-1/2 mobile-m:translate-x-1/2',
 			]"
 		>
 			{{ points }}
@@ -53,7 +54,7 @@ watch(points, (newPts, oldPts) => {
 				<div
 					:class="[
 						stagePass ? 'w-full' : 'w-0',
-						'h-[0.125rem] rounded-full bg-black transition-[width]',
+						'h-[0.125rem] rounded-full bg-black transition-[width] duration-1000',
 					]"
 				/>
 			</div>
