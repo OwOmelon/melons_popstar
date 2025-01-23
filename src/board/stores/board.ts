@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 
-export type TilePosition = {
+export type BoardPosition = {
 	x: number;
 	y: number;
 };
@@ -54,7 +54,7 @@ export const useBoardStore = defineStore("board", () => {
 		});
 	}
 
-	async function selectTile(pos: TilePosition) {
+	async function selectTile(pos: BoardPosition) {
 		const tile = getTile(pos);
 
 		if (!tile || tile.state === "CLEARED") return;
@@ -107,11 +107,11 @@ export const useBoardStore = defineStore("board", () => {
 
 	// --------------------
 
-	function getTile(pos: TilePosition): Tile | undefined {
+	function getTile(pos: BoardPosition): Tile | undefined {
 		return board.value?.[pos.x]?.[pos.y];
 	}
 
-	function getLinearAdjacentPositions(pos: TilePosition): TilePosition[] {
+	function getLinearAdjacentPositions(pos: BoardPosition): BoardPosition[] {
 		return [
 			{ x: pos.x, y: pos.y - 1 },
 			{ x: pos.x, y: pos.y + 1 },

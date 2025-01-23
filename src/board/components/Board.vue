@@ -4,7 +4,7 @@ import Tile from "./Tile.vue";
 import { useTemplateRef } from "vue";
 import { storeToRefs } from "pinia";
 import { type OnClickOutsideHandler, onClickOutside } from "@vueuse/core";
-import { type TilePosition, useBoardStore } from "../stores/board";
+import { type BoardPosition, useBoardStore } from "../stores/board";
 import { shakeElement } from "@/app/utils/shake_element";
 
 const emit = defineEmits<{
@@ -16,7 +16,7 @@ const { deselectTiles, selectTile, organizeBoard } = useBoardStore();
 
 const boardEl = useTemplateRef<HTMLElement>("boardEl");
 
-function onTileSelect(pos: TilePosition) {
+function onTileSelect(pos: BoardPosition) {
 	deselectTiles();
 	selectTile(pos);
 	addTileDeselectListener();
