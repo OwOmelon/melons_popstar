@@ -1,23 +1,45 @@
 const options: KeyframeAnimationOptions = { duration: 100 };
-const keyframes = [
-	{
-		transform: "translateX(2px) translateY(-2px)",
-	},
-	{
-		transform: "translateX(-2px) translateY(-2px)",
-	},
-	{
-		transform: "translateX(1px) translateY(1px)",
-	},
-	{
-		transform: "translateX(-1px) translateY(1px)",
-	},
-	{
-		transform: "translateX(3px) translateY(-3px)",
-	},
-	{
-		transform: "translateX(-3px) translateY(-3px)",
-	},
+const shakeKeyframes = [
+	[
+		{
+			transform: "translateX(2px) translateY(-2px)",
+		},
+		{
+			transform: "translateX(-2px) translateY(-2px)",
+		},
+		{
+			transform: "translateX(1px) translateY(1px)",
+		},
+		{
+			transform: "translateX(-1px) translateY(1px)",
+		},
+		{
+			transform: "translateX(3px) translateY(-3px)",
+		},
+		{
+			transform: "translateX(-3px) translateY(-3px)",
+		},
+	],
+	[
+		{
+			transform: "translateX(-2px) translateY(2px)",
+		},
+		{
+			transform: "translateX(2px) translateY(2px)",
+		},
+		{
+			transform: "translateX(-1px) translateY(-1px)",
+		},
+		{
+			transform: "translateX(1px) translateY(-1px)",
+		},
+		{
+			transform: "translateX(-3px) translateY(3px)",
+		},
+		{
+			transform: "translateX(3px) translateY(3px)",
+		},
+	],
 ];
 
 export function shakeElement(el: HTMLElement) {
@@ -27,5 +49,8 @@ export function shakeElement(el: HTMLElement) {
 		return;
 	}
 
-	el.animate(keyframes, options);
+	el.animate(
+		shakeKeyframes[Math.floor(Math.random() * shakeKeyframes.length)],
+		options,
+	);
 }
