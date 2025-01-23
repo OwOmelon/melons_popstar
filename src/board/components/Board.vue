@@ -64,7 +64,7 @@ function removeTileDeselectListener(e: PointerEvent) {
 	<div
 		ref="boardEl"
 		id="board"
-		class="relative flex items-center justify-center gap-2 gap-[0.3625rem] rounded p-2"
+		class="relative flex items-center justify-center gap-2 gap-[0.3625rem] rounded p-2 mt-auto"
 	>
 		<div
 			v-for="(column, x) in board"
