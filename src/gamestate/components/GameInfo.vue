@@ -21,39 +21,42 @@ watch(points, (newPts, oldPts) => {
 </script>
 
 <template>
-	<div class="relative flex justify-between px-5 font-bold">
-		<span>stage: {{ stage }}</span>
+	<div
+		class="relative mx-5 flex flex-col justify-between font-bold mobile-m:flex-row"
+	>
+		<div class="row-start-1">stage: {{ stage }}</div>
 
-		<span
+		<div
 			:class="[
 				{
-					'shadow-subtle glint !border-white bg-amber-400 text-white':
-						stagePass,
+					'shadow-subtle glint !border-white bg-amber-400 text-white': stagePass,
 				},
-				'absolute left-1/2 top-1/2 mx-auto w-fit -translate-x-1/2 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-[2.25em] transition-colors',
+				'absolute right-0 top-1/2 col-start-2 row-start-1 -translate-y-1/2 rounded border-2 border-transparent px-4 py-2 text-center text-[2.25em] transition-colors mobile-m:right-1/2 mobile-m:translate-x-1/2',
 			]"
 		>
 			{{ points }}
-		</span>
-
-		<div class="relative">
-			<span>goal: {{ goal }}</span>
 
 			<div
-				:class="[
-					stagePass ? 'w-[120%]' : 'w-0',
-					'absolute left-1/2 top-1/2 h-[2px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-black transition-[width]',
-				]"
-			/>
+				class="absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-[calc(50%_-_2rem)] place-items-center text-[initial]"
+			>
+				<span
+					ref="pointsGainedEl"
+					class="absolute whitespace-nowrap text-xl opacity-0"
+				/>
+			</div>
 		</div>
 
-		<div
-			class="absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-[calc(50%_-_2rem)] place-items-center"
-		>
-			<span
-				ref="pointsGainedEl"
-				class="absolute whitespace-nowrap text-xl opacity-0"
-			/>
+		<div class="relative grid w-fit place-items-center">
+			<span>goal: {{ goal }}</span>
+
+			<div class="absolute w-[120%]">
+				<div
+					:class="[
+						stagePass ? 'w-full' : 'w-0',
+						'h-[0.125rem] rounded-full bg-black transition-[width]',
+					]"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
