@@ -1,4 +1,4 @@
-const options: KeyframeAnimationOptions = { duration: 100, fill: "forwards" };
+const options: KeyframeAnimationOptions = { duration: 100 };
 const keyframes = [
 	{
 		transform: "translateX(2px) translateY(-2px)",
