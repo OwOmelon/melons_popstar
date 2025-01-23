@@ -45,11 +45,11 @@ const emit = defineEmits<{
 						}
 					"
 				>
-					RESTART <RetryIcon />
+					<span>RESTART</span> <RetryIcon />
 				</button>
 
 				<button type="button" @click="emit('close')">
-					CONTINUE <PlayIcon />
+					<span>CONTINUE</span> <PlayIcon />
 				</button>
 			</div>
 		</div>
@@ -58,6 +58,10 @@ const emit = defineEmits<{
 
 <style scoped lang="postcss">
 .game button {
-	@apply flex grow items-center justify-center  gap-2 rounded bg-amber-300 px-4 py-2 font-semibold text-white shadow shadow-black/25 transition-transform hover:-translate-y-1;
+	@apply flex grow items-center justify-center gap-2 rounded bg-amber-300 px-4 py-2 font-semibold text-white shadow shadow-black/25 transition-transform hover:-translate-y-1;
+}
+
+.game button span {
+	@apply hidden mobile-l:inline;
 }
 </style>
