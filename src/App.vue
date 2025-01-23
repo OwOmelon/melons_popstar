@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// !!! ADD HIGHSCORE / PREVIOUS HIGHSCORES FEATURE
+
 import BG from "@/app/components/BG.vue";
 
 import PauseBtn from "@/settings/components/pause/Button.vue";
@@ -20,6 +22,7 @@ import { useGameStateStore } from "@/gamestate/stores/gamestate";
 import { useSettingsStore } from "@/settings/stores/settings";
 
 import { delay } from "@/app/utils/delay";
+import { shakeElement } from "@/app/utils/shake_element";
 
 // ----------
 
@@ -29,20 +32,24 @@ const { resetBoard, getTile, isBoardCleared } = useBoardStore();
 const { gameover, points, stagePass } = storeToRefs(useGameStateStore());
 const { resetState, addPoints, nextStage } = useGameStateStore();
 
-const { paused, changingBoardSize } = storeToRefs(useSettingsStore());
+const { paused, settings_Toggles, changingBoardSize } =
+	storeToRefs(useSettingsStore());
 const { changeBoardSize } = useSettingsStore();
 
 // ----------
 
 const boardRef = useTemplateRef<typeof Board>("boardRef");
 
-function onTileClear(tilesCleared: number) {
-	// !!! ADD POINTS ---
-	// !!! ADD TILE CLEAR ANIM
-	// !!! SHAKE BOARD (SHOULD BE DONE IN BOARD COMPONENT?) ---
-	// !!! CHECK BOARD FINISHED ---
-	// !!! IF FINISHED, RUN END GAME LOGIC ---
+function shakeBoardRef() {
+	if (settings_Toggles.value.boardShake.toggled && boardRef.value?.$el) {
+		shakeElement(boardRef.value.$el);
+	}
+}
 
+function onTileClear(tilesCleared: number) {
+	// !!! ADD TILE CLEAR ANIM
+
+	shakeBoardRef();
 	addPoints(tilesCleared);
 
 	if (!isBoardCleared()) onBoardClear();
@@ -51,14 +58,15 @@ function onTileClear(tilesCleared: number) {
 async function onBoardClear(): Promise<void> {
 	boardClearBonus.value = boardClearBonus_Max;
 
-	await delay(1000);
+	await delay(500);
 	await getBoardClearBonus();
+	await delay(500);
 
 	points.value += boardClearBonus.value!;
 	boardClearBonus.value = -1;
 
 	if (stagePass.value) {
-		resetBoard();
+		await boardResetAnimation();
 		nextStage();
 	} else {
 		gameover.value = true;
@@ -67,7 +75,7 @@ async function onBoardClear(): Promise<void> {
 
 function restartGame() {
 	resetState();
-	resetBoard();
+	boardResetAnimation();
 }
 
 // ===============
@@ -78,7 +86,7 @@ const boardClearBonus = ref<number>(-1);
 async function getBoardClearBonus(): Promise<void> {
 	if (boardClearBonus.value === -1) return;
 
-	const delayAmount = 400;
+	const delayAmount = 100;
 	let subtrahend = 20;
 	let tilesChecked = 0;
 
@@ -90,6 +98,7 @@ async function getBoardClearBonus(): Promise<void> {
 
 			if (tile.state === "IDLE") {
 				tile.state = "CLEARED";
+				shakeBoardRef();
 
 				boardClearBonus.value = boardClearBonus.value - subtrahend;
 				subtrahend = subtrahend + 40;
@@ -103,9 +112,93 @@ async function getBoardClearBonus(): Promise<void> {
 
 	return;
 }
+
+async function boardResetAnimation(): Promise<void> {
+	if (!boardRef.value) {
+		alert("BOARD ELEMENT IS UNDEFINED");
+
+		return;
+	}
+
+	const br = boardRef.value.$el as HTMLElement;
+	const animDur = 750;
+
+	if (board.value.length) {
+		// LEAVE RIGHT
+
+		br.animate(
+			[
+				{
+					transform: "translateX(75vw)",
+				},
+			],
+			{ easing: "ease-in", fill: "forwards", duration: animDur },
+		);
+
+		await delay(animDur);
+
+		// RESET BOARD AND TELEPORT LEFT
+
+		resetBoard();
+		br.animate(
+			[
+				{
+					transform: "translateX(-75vw)",
+				},
+			],
+			{ fill: "forwards", duration: 1 },
+		);
+	}
+
+	// ENTER RIGHT AND RISE UP
+
+	br.animate(
+		[
+			{
+				transform: "translateX(0)",
+			},
+		],
+		{ easing: "ease-in-out", fill: "forwards", duration: animDur },
+	);
+
+	br.animate(
+		[
+			{
+				transform: "translateY(-4rem)",
+			},
+		],
+		{ easing: "ease-in-out", fill: "forwards", duration: animDur },
+	);
+
+	await delay(animDur + animDur / 3);
+
+	// FALL DOWN
+
+	br.animate(
+		[
+			{
+				transform: "translateX(0)",
+			},
+		],
+		{ easing: "ease-in", fill: "forwards", duration: animDur / 5 },
+	);
+
+	await delay(animDur / 5);
+
+	shakeBoardRef();
+
+	return;
+}
 </script>
 
 <template>
+	<button
+		class="fixed left-0 top-0 bg-black text-white"
+		@click="boardResetAnimation"
+	>
+		board reset animation
+	</button>
+
 	<BG />
 
 	<div
