@@ -23,7 +23,7 @@ watch(
 			{
 				'pointer-events-none opacity-0 duration-[1.5s]': boardClearBonus === -1,
 			},
-			'shadow-subtle mx-auto my-4 my-auto flex items-center justify-center gap-4 rounded border-2 border-white bg-lime-300 px-4 py-2 text-white transition-opacity duration-500',
+			'shadow-subtle mx-auto flex translate-y-9 items-center justify-center gap-4 rounded border-2 border-white bg-lime-300 px-4 py-2 text-white transition-opacity duration-500',
 		]"
 	>
 		bonus:
