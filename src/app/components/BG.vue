@@ -42,7 +42,7 @@ const opacity = computed(() => {
 
 <style scoped lang="postcss">
 .bg-image {
-	background-image: url(../assets/circle.svg);
+	background-image: url(../../assets/circle.svg);
 	background-size: 26px;
 }
 
