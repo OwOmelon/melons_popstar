@@ -152,6 +152,7 @@ export const useBoardStore = defineStore("board", () => {
 		organizeBoard,
 
 		getTile,
+		getLinearAdjacentPositions,
 		isBoardCleared,
 	};
 });
