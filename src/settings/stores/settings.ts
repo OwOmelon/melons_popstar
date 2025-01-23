@@ -2,51 +2,32 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
 
-type Setting =
-	| "bg-anim"
-	| "tile-select-anim"
-	| "tile-clear-anim"
-	| "board-shake";
+type SettingKey = "bgAnim" | "tileClearAnim" | "boardShake";
 
 export const useSettingsStore = defineStore("settings", () => {
-	const paused = ref(false)
+	const paused = ref(false);
 
-	// !!! REWORK TOGGLES
+	const settings_Toggles = useStorage<
+		Record<SettingKey, { displayName: string; toggled: boolean }>
+	>("settings_toggles", {
+		bgAnim: { displayName: "background animation", toggled: true },
+		tileClearAnim: { displayName: "tile clear animation", toggled: true },
+		boardShake: { displayName: "board shake", toggled: true },
+	});
 
-	const bgAnim = useStorage("bg-anim", true);
-	const boardShake = useStorage("board-shake", true);
-	const tileSelectAnim = useStorage("tile-select-anim", true);
-	const tileClearAnim = useStorage("tile-clear-anim", true);
-
-	function toggleSetting(setting: Setting) {
-		switch (setting) {
-			case "bg-anim":
-				bgAnim.value = !bgAnim.value;
-				break;
-
-			case "board-shake":
-				boardShake.value = !boardShake.value;
-				break;
-
-			case "tile-select-anim":
-				tileSelectAnim.value = !tileSelectAnim.value;
-				break;
-
-			case "tile-clear-anim":
-				tileClearAnim.value = !tileClearAnim.value;
-				break;
-		}
+	function toggleSetting(key: SettingKey) {
+		settings_Toggles.value[key].toggled = !settings_Toggles.value[key].toggled;
 	}
 
 	const changingBoardSize = ref<boolean>(false);
-	const areaFontSize = ref(16)
+	const areaFontSize = ref(16);
 
 	function changeBoardSize(operation: "inc" | "dec"): void {
-		const el = document.getElementById('area')!;
-		const vfxDiv = document.getElementById('vfx')!
+		const el = document.getElementById("area")!;
+		const vfxDiv = document.getElementById("vfx")!;
 		const operand = operation === "inc" ? 2 : -2;
 
-		areaFontSize.value += operand
+		areaFontSize.value += operand;
 
 		el.style.fontSize = `${areaFontSize.value}px`;
 		vfxDiv.style.fontSize = `${areaFontSize.value}px`;
@@ -54,11 +35,8 @@ export const useSettingsStore = defineStore("settings", () => {
 
 	return {
 		paused,
+		settings_Toggles,
 
-		bgAnim,
-		tileSelectAnim,
-		tileClearAnim,
-		boardShake,
 		toggleSetting,
 
 		changingBoardSize,

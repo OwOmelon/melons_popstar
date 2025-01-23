@@ -5,7 +5,6 @@ import { useTemplateRef } from "vue";
 import { storeToRefs } from "pinia";
 import { type OnClickOutsideHandler, onClickOutside } from "@vueuse/core";
 import { type BoardPosition, useBoardStore } from "../stores/board";
-import { shakeElement } from "@/app/utils/shake_element";
 
 const emit = defineEmits<{
 	"on-tile-clear": [number];
@@ -25,8 +24,6 @@ function onTileSelect(pos: BoardPosition) {
 async function onTileClear(e: PointerEvent) {
 	emit("on-tile-clear", organizeBoard());
 	removeTileDeselectListener(e);
-
-	if (boardEl.value) shakeElement(boardEl.value);
 }
 
 let boardEl_ClickOutside_Listener: OnClickOutsideHandler | null = null;

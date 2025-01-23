@@ -5,7 +5,7 @@ import { useGameStateStore } from "@/gamestate/stores/gamestate";
 import { useSettingsStore } from "@/settings/stores/settings";
 
 const { gameover } = storeToRefs(useGameStateStore());
-const { bgAnim } = storeToRefs(useSettingsStore());
+const { settings_Toggles } = storeToRefs(useSettingsStore());
 
 const opacity = computed(() => {
 	return gameover ? "opacity-20" : "opacity-75";
@@ -24,7 +24,7 @@ const opacity = computed(() => {
 		>
 			<div
 				:class="[
-					{ scroll: bgAnim },
+					{ scroll: settings_Toggles.bgAnim.toggled },
 					opacity,
 					'bg-image absolute h-[200%] w-[200%] transition-opacity duration-1000',
 				]"

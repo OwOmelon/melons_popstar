@@ -1,36 +1,29 @@
 <script setup lang="ts">
-import Setting from "./Setting.vue";
-
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings";
 
+const { settings_Toggles, changingBoardSize } = storeToRefs(useSettingsStore());
 const { toggleSetting } = useSettingsStore();
-const { bgAnim, tileSelectAnim, tileClearAnim, boardShake, changingBoardSize } =
-	storeToRefs(useSettingsStore());
 </script>
 
 <template>
 	<div class="settings flex flex-col gap-2">
-		<Setting
-			text="background animation"
-			:toggled="bgAnim"
-			@toggle="toggleSetting('bg-anim')"
-		/>
-		<Setting
-			text="star select animation"
-			:toggled="tileSelectAnim"
-			@toggle="toggleSetting('tile-select-anim')"
-		/>
-		<Setting
-			text="star clear animation"
-			:toggled="tileClearAnim"
-			@toggle="toggleSetting('tile-clear-anim')"
-		/>
-		<Setting
-			text="board shake"
-			:toggled="boardShake"
-			@toggle="toggleSetting('board-shake')"
-		/>
+		<div
+			v-for="({ displayName, toggled }, settingsKey, _) in settings_Toggles"
+			class="flex grow items-center justify-between gap-2"
+			@click="toggleSetting(settingsKey)"
+		>
+			{{ displayName }}
+
+			<div
+				:class="[
+					toggled ? 'justify-end bg-amber-300' : 'justify-start bg-neutral-300',
+					'shadow-subtle flex h-5 w-10 cursor-pointer rounded-full bg-amber-400 p-[2px]',
+				]"
+			>
+				<div class="aspect-square h-full rounded-full bg-white" />
+			</div>
+		</div>
 
 		<button
 			type="button"
