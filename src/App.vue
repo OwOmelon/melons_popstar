@@ -121,6 +121,7 @@ async function boardResetAnimation(): Promise<void> {
 	}
 
 	const br = boardRef.value.$el as HTMLElement;
+	const brBounding = br.getBoundingClientRect();
 	const animDur = 750;
 	const skipLeave =
 		!board.value.length ||
@@ -135,7 +136,8 @@ async function boardResetAnimation(): Promise<void> {
 		br.animate(
 			[
 				{
-					transform: "translateX(75vw)",
+					// transform: "translateX(75vw)",
+					transform: `translateX(${window.innerWidth - brBounding.left}px)`,
 				},
 			],
 			{ easing: "ease-in", fill: "forwards", duration: animDur },
@@ -149,7 +151,7 @@ async function boardResetAnimation(): Promise<void> {
 	br.animate(
 		[
 			{
-				transform: "translateX(-75vw)",
+				transform: `translateX(${brBounding.right - window.innerWidth - brBounding.width}px)`,
 			},
 		],
 		{ fill: "forwards", duration: 1 },
