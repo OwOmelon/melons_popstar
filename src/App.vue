@@ -8,7 +8,7 @@ import PauseMenu from "@/settings/components/pause/Menu.vue";
 import ChangeBoardSize from "@/settings/components/ChangeBoardSize.vue";
 
 import GameInfo from "@/gamestate/components/GameInfo.vue";
-import EndGameBonus from "@/gamestate/components/EndGameBonus.vue";
+import BoardClearBonus from "@/gamestate/components/BoardClearBonus.vue";
 import GameOver from "@/gamestate/components/GameOver.vue";
 
 import Board from "@/board/components/Board.vue";
@@ -122,11 +122,14 @@ async function boardResetAnimation(): Promise<void> {
 
 	const br = boardRef.value.$el as HTMLElement;
 	const animDur = 750;
+	const skipLeave =
+		!board.value.length ||
+		board.value.every((column) =>
+			column.every((tile) => tile.state === "CLEARED"),
+		);
 
-	console.log(board.value.length)
-
-	if (board.value.length) {
-		console.log("animate leave")
+	if (!skipLeave) {
+		console.log("animate leave");
 		// LEAVE RIGHT
 
 		br.animate(
@@ -139,19 +142,22 @@ async function boardResetAnimation(): Promise<void> {
 		);
 
 		await delay(animDur);
-
-		// RESET BOARD AND TELEPORT LEFT
-
-		resetBoard();
-		br.animate(
-			[
-				{
-					transform: "translateX(-75vw)",
-				},
-			],
-			{ fill: "forwards", duration: 1 },
-		);
 	}
+
+	// RESET BOARD AND TELEPORT LEFT
+
+	br.animate(
+		[
+			{
+				transform: "translateX(-75vw)",
+			},
+		],
+		{ fill: "forwards", duration: 1 },
+	);
+
+	await delay(110);
+
+	resetBoard();
 
 	// ENTER RIGHT AND RISE UP
 
@@ -199,12 +205,12 @@ async function boardResetAnimation(): Promise<void> {
 
 	<div
 		id="area"
-		class="relative flex h-screen max-h-[78ex] min-h-[680px] w-[30em] max-w-[100vw] flex-col"
+		class="relative flex h-screen max-h-[78ex] w-full max-w-[30em] flex-col px-2 pb-2"
 	>
 		<PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
 		<GameInfo />
-		<EndGameBonus :board-clear-bonus="boardClearBonus" />
+		<BoardClearBonus :board-clear-bonus="boardClearBonus" />
 
 		<Board ref="boardRef" @on-tile-clear="onTileClear" />
 	</div>
