@@ -29,7 +29,7 @@ function onPointerUp(e: PointerEvent): void {
 		:class="[
 			state,
 			color,
-			'relative grid aspect-square place-items-center rounded border-[0.0625rem] border-[0.125rem] border-black border-transparent shadow-[0_0_0.25rem] shadow-black/50',
+			'relative grid aspect-square w-10 place-items-center rounded border-[0.125rem] border-transparent shadow-[0_0_0.25rem] shadow-black/50',
 		]"
 		@pointerdown.prevent="onPointerUp"
 	>
