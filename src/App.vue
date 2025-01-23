@@ -123,7 +123,10 @@ async function boardResetAnimation(): Promise<void> {
 	const br = boardRef.value.$el as HTMLElement;
 	const animDur = 750;
 
+	console.log(board.value.length)
+
 	if (board.value.length) {
+		console.log("animate leave")
 		// LEAVE RIGHT
 
 		br.animate(
@@ -192,13 +195,6 @@ async function boardResetAnimation(): Promise<void> {
 </script>
 
 <template>
-	<button
-		class="fixed left-0 top-0 bg-black text-white"
-		@click="boardResetAnimation"
-	>
-		board reset animation
-	</button>
-
 	<BG />
 
 	<div
