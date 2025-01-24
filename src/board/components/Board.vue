@@ -16,7 +16,6 @@ const { deselectTiles, selectTile, organizeBoard } = useBoardStore();
 const boardEl = useTemplateRef<HTMLElement>("boardEl");
 
 function onTileSelect(pos: BoardPosition) {
-	deselectTiles();
 	selectTile(pos);
 	addTileDeselectListener();
 }

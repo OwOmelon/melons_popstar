@@ -46,42 +46,77 @@ export const useBoardStore = defineStore("board", () => {
 
 	// --------------------
 
+	const selectedTilesMap: Map<BoardPosition["x"], BoardPosition["y"][]> =
+		new Map();
+
+	function addBoardPostionToSelectedTilesMap(pos: BoardPosition) {
+		selectedTilesMap.set(pos.x, [
+			...(selectedTilesMap.get(pos.x) ?? []),
+			pos.y,
+		]);
+	}
+
 	async function deselectTiles(): Promise<void> {
-		board.value.forEach((column) => {
+		/*board.value.forEach((column) => {
 			column.forEach((tile) => {
 				if (tile.state === "SELECTED") tile.state = "IDLE";
 			});
+		});*/
+
+		selectedTilesMap.forEach((rows, column) => {
+			rows.forEach((row) => {
+				const tile = getTile({ x: column, y: row })!;
+
+				tile.state = "IDLE";
+			});
 		});
+
+		selectedTilesMap.clear();
 	}
 
-	async function selectTile(pos: BoardPosition) {
-		const tile = getTile(pos);
+	function selectTile(pos: BoardPosition) {
+		console.log(selectedTilesMap.size)
 
-		if (!tile || tile.state === "CLEARED") return;
+		if (selectedTilesMap.size) deselectTiles();
 
-		getLinearAdjacentPositions(pos).forEach((adjPos) => {
-			const adjTile = getTile(adjPos);
+		recurse(pos);
 
-			if (
-				!adjTile ||
-				adjTile.state !== "IDLE" ||
-				adjTile.color !== tile.color
-			) {
-				return;
-			}
+		function recurse(p: BoardPosition) {
+			const tile = getTile(p);
 
-			adjTile.state = "SELECTED";
-			selectTile(adjPos);
-		});
+			if (!tile || tile.state === "CLEARED") return;
+
+			getLinearAdjacentPositions(p).forEach((adjPos) => {
+				const adjTile = getTile(adjPos);
+
+				if (
+					!adjTile ||
+					adjTile.state !== "IDLE" ||
+					adjTile.color !== tile.color
+				) {
+					return;
+				}
+
+				adjTile.state = "SELECTED";
+				addBoardPostionToSelectedTilesMap(adjPos);
+				recurse(adjPos);
+			});
+		}
 	}
 
 	function organizeBoard() {
 		const organizedBoard: typeof board.value = [];
 		let tilesCleared = 0;
 
-		board.value.forEach((column) => {
+		board.value.forEach((column, x) => {
+			if (!selectedTilesMap.has(x)) {
+				organizedBoard.push(column);
+
+				return;
+			}
+
 			const organizedColumn: typeof column = [];
-			let tilesClearedInColumn: number = 0;
+			let column_ClearedTilesCount: number = 0;
 
 			column.forEach((tile) => {
 				if (tile.state === "SELECTED") {
@@ -92,15 +127,16 @@ export const useBoardStore = defineStore("board", () => {
 					organizedColumn.push(tile);
 				}
 
-				if (tile.state === "CLEARED") tilesClearedInColumn++;
+				if (tile.state === "CLEARED") column_ClearedTilesCount++;
 			});
 
-			if (tilesClearedInColumn !== boardSize) {
+			if (column_ClearedTilesCount !== boardSize) {
 				organizedBoard.push(organizedColumn);
 			}
 		});
 
 		board.value = organizedBoard;
+		selectedTilesMap.clear()
 
 		return tilesCleared;
 	}
