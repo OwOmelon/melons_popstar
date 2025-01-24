@@ -130,13 +130,11 @@ async function boardResetAnimation(): Promise<void> {
 		);
 
 	if (!skipLeave) {
-		console.log("animate leave");
 		// LEAVE RIGHT
 
 		br.animate(
 			[
 				{
-					// transform: "translateX(75vw)",
 					transform: `translateX(${window.innerWidth - brBounding.left}px)`,
 				},
 			],
@@ -161,21 +159,14 @@ async function boardResetAnimation(): Promise<void> {
 
 	resetBoard();
 
+	await delay(200);
+
 	// ENTER RIGHT AND RISE UP
 
 	br.animate(
 		[
 			{
-				transform: "translateX(0)",
-			},
-		],
-		{ easing: "ease-in-out", fill: "forwards", duration: animDur },
-	);
-
-	br.animate(
-		[
-			{
-				transform: "translateY(-4rem)",
+				transform: "translateX(0) translateY(-4rem)",
 			},
 		],
 		{ easing: "ease-in-out", fill: "forwards", duration: animDur },
