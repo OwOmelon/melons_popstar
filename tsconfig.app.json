@@ -8,6 +8,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["node", "unplugin-icons/types/vue"]
+    "types": ["node", "unplugin-icons/types/vue"],
+    "lib": ["dom", "ESNext", "ESNext.Array"],
+    "target": "ESNext"
   }
 }
