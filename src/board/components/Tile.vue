@@ -62,10 +62,6 @@ function onPointerUp(e: PointerEvent): void {
 
 /* STATES */
 
-/* .SELECTED {
-	@apply scale-[1.1] border-white brightness-125;
-} */
-
 .SELECTED {
 	@apply border-white;
 }
@@ -75,6 +71,10 @@ function onPointerUp(e: PointerEvent): void {
 }
 
 .CLEARED {
-	@apply opacity-0;
+	@apply !bg-white opacity-15;
+}
+
+.CLEARED svg {
+	@apply hidden;
 }
 </style>
