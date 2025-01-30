@@ -91,7 +91,7 @@ async function getBoardClearBonus(): Promise<void> {
 	let tilesChecked = 0;
 
 	for (let y = 0; y < 10; y++) {
-		for (let x = 0; x < board.value.length; x++) {
+		for (const x of board.value.keys()) {
 			if (boardClearBonus.value <= 0) break;
 
 			const tile = getTile({ x, y })!;
@@ -124,8 +124,8 @@ async function boardResetAnimation(): Promise<void> {
 	const brBounding = br.getBoundingClientRect();
 	const animDur = 750;
 	const skipLeave =
-		!board.value.length ||
-		board.value.every((column) =>
+		!board.value.size ||
+		Array.from(board.value.values()).every((column) =>
 			column.every((tile) => tile.state === "CLEARED"),
 		);
 

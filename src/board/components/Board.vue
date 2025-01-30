@@ -63,7 +63,7 @@ function removeTileDeselectListener(e: PointerEvent) {
 		class="relative mt-auto flex aspect-square items-center justify-center"
 	>
 		<div
-			v-for="(column, x) in board"
+			v-for="[x, column] in board"
 			class="column relative flex h-full w-[10%] flex-col gap-[inherit]"
 		>
 			<Tile

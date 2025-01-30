@@ -19,11 +19,11 @@ export type Tile = {
 export const useBoardStore = defineStore("board", () => {
 	const boardSize = 10;
 	const tilePalette: TileColor[] = ["YELLOW", "PURPLE", "BLUE", "GREEN", "RED"];
-	const board = ref<Tile[][]>([]);
+	const board = ref<Map<BoardPosition["x"], Tile[]>>(new Map());
 
 	resetBoard();
 	function resetBoard() {
-		const newBoard: typeof board.value = [];
+		const newBoard: typeof board.value = new Map();
 
 		for (let columnIndex = 0; columnIndex < boardSize; columnIndex++) {
 			const column: Tile[] = [];
@@ -38,7 +38,7 @@ export const useBoardStore = defineStore("board", () => {
 				column.push(tile);
 			}
 
-			newBoard.push(column);
+			newBoard.set(columnIndex, column);
 		}
 
 		board.value = newBoard;
@@ -56,13 +56,7 @@ export const useBoardStore = defineStore("board", () => {
 		]);
 	}
 
-	async function deselectTiles(): Promise<void> {
-		/*board.value.forEach((column) => {
-			column.forEach((tile) => {
-				if (tile.state === "SELECTED") tile.state = "IDLE";
-			});
-		});*/
-
+	function deselectTiles() {
 		selectedTilesMap.forEach((rows, column) => {
 			rows.forEach((row) => {
 				const tile = getTile({ x: column, y: row })!;
@@ -75,8 +69,6 @@ export const useBoardStore = defineStore("board", () => {
 	}
 
 	function selectTile(pos: BoardPosition) {
-		console.log(selectedTilesMap.size)
-
 		if (selectedTilesMap.size) deselectTiles();
 
 		recurse(pos);
@@ -105,12 +97,12 @@ export const useBoardStore = defineStore("board", () => {
 	}
 
 	function organizeBoard() {
-		const organizedBoard: typeof board.value = [];
+		const organizedBoard: typeof board.value = new Map();
 		let tilesCleared = 0;
 
 		board.value.forEach((column, x) => {
 			if (!selectedTilesMap.has(x)) {
-				organizedBoard.push(column);
+				organizedBoard.set(x, column);
 
 				return;
 			}
@@ -131,12 +123,12 @@ export const useBoardStore = defineStore("board", () => {
 			});
 
 			if (column_ClearedTilesCount !== boardSize) {
-				organizedBoard.push(organizedColumn);
+				organizedBoard.set(x, organizedColumn);
 			}
 		});
 
 		board.value = organizedBoard;
-		selectedTilesMap.clear()
+		selectedTilesMap.clear();
 
 		return tilesCleared;
 	}
@@ -144,24 +136,27 @@ export const useBoardStore = defineStore("board", () => {
 	// --------------------
 
 	function getTile(pos: BoardPosition): Tile | undefined {
-		return board.value?.[pos.x]?.[pos.y];
+		return board.value.get(pos.x)?.[pos.y];
 	}
 
 	function getLinearAdjacentPositions(pos: BoardPosition): BoardPosition[] {
+		const xIndeces = Array.from(board.value.keys());
+		const xIndex = xIndeces.indexOf(pos.x);
+
 		return [
 			{ x: pos.x, y: pos.y - 1 },
 			{ x: pos.x, y: pos.y + 1 },
-			{ x: pos.x - 1, y: pos.y },
-			{ x: pos.x + 1, y: pos.y },
+			{ x: xIndeces[xIndex - 1], y: pos.y },
+			{ x: xIndeces[xIndex + 1], y: pos.y },
 		];
 	}
 
 	function isBoardCleared() {
-		for (const [x, column] of Object.entries(board.value)) {
+		for (const [x, column] of board.value) {
 			for (const [y, tile] of Object.entries(column)) {
 				if (tile.state !== "IDLE") continue;
 
-				for (const adjPos of getLinearAdjacentPositions({ x: +x, y: +y })) {
+				for (const adjPos of getLinearAdjacentPositions({ x: x, y: +y })) {
 					const adjTile = getTile(adjPos);
 
 					if (adjTile?.state === "IDLE" && adjTile?.color === tile.color) {
