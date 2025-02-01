@@ -8,7 +8,11 @@ const { paused } = storeToRefs(useSettingsStore());
 </script>
 
 <template>
-	<button type="button" @click="paused = true">
+	<button
+		type="button"
+		class="rounded bg-amber-300 p-1 text-lg text-white shadow shadow-black/25 transition-transform hover:-translate-y-1 active:scale-90"
+		@click="paused = true"
+	>
 		<PauseIcon />
 	</button>
 </template>
