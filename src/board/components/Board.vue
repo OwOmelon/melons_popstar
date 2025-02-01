@@ -62,8 +62,11 @@ function removeTileDeselectListener(e: PointerEvent) {
 		id="board"
 		class="relative mt-auto flex aspect-square items-center justify-center"
 	>
-		<div
+		<TransitionGroup
 			v-for="[x, column] in board"
+			:key="x"
+			tag="div"
+			name="column"
 			class="column relative flex h-full w-[10%] flex-col gap-[inherit]"
 		>
 			<Tile
@@ -73,12 +76,30 @@ function removeTileDeselectListener(e: PointerEvent) {
 				@select="onTileSelect({ x, y })"
 				@clear="onTileClear"
 			/>
-		</div>
+		</TransitionGroup>
 	</div>
 </template>
 
 <style scoped lang="postcss">
 :deep(.TILE) {
 	@apply m-[0.18125rem];
+}
+
+.column-move,
+.column-enter-active,
+.column-leave-active {
+	transition: all 500ms cubic-bezier(0.86, 0, 0.14, 1);
+}
+
+.column-enter-from,
+.column-leave-to {
+	opacity: 0;
+}
+
+.column-leave-to {
+	transform: translate(0, 75%);
+}
+.column-leave-active {
+	position: absolute;
 }
 </style>
