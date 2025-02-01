@@ -5,7 +5,6 @@ import BG from "@/app/components/BG.vue";
 
 import PauseBtn from "@/settings/components/pause/Button.vue";
 import PauseMenu from "@/settings/components/pause/Menu.vue";
-import ChangeBoardSize from "@/settings/components/ChangeBoardSize.vue";
 
 import GameInfo from "@/gamestate/components/GameInfo.vue";
 import BoardClearBonus from "@/gamestate/components/BoardClearBonus.vue";
@@ -36,9 +35,7 @@ const { resetBoard, getTile, isBoardCleared } = useBoardStore();
 const { gameover, points, stagePass } = storeToRefs(useGameStateStore());
 const { resetState, addPoints, nextStage } = useGameStateStore();
 
-const { paused, settings_Toggles, changingBoardSize } =
-	storeToRefs(useSettingsStore());
-const { changeBoardSize } = useSettingsStore();
+const { paused, settings_Toggles } = storeToRefs(useSettingsStore());
 
 const { saveScore } = useScoresStore();
 
@@ -224,16 +221,7 @@ async function boardResetAnimation(): Promise<void> {
 		<GameOver v-if="gameover" @restart="restartGame" />
 	</Transition>
 
-	<Transition name="fade">
-		<ChangeBoardSize
-			v-if="paused && changingBoardSize"
-			@increase="changeBoardSize('inc')"
-			@decrease="changeBoardSize('dec')"
-			@done="changingBoardSize = false"
-		/>
-	</Transition>
-
-	<ModalWrapper :show="paused && !changingBoardSize">
+	<ModalWrapper :show="paused">
 		<PauseMenu @close="paused = false" @restart="restartGame" />
 	</ModalWrapper>
 </template>

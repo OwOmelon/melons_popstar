@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings";
 
-const { settings_Toggles, changingBoardSize } = storeToRefs(useSettingsStore());
+const { settings_Toggles } = storeToRefs(useSettingsStore());
 const { toggleSetting } = useSettingsStore();
 </script>
 
@@ -24,13 +24,5 @@ const { toggleSetting } = useSettingsStore();
 				<div class="aspect-square h-full rounded-full bg-white" />
 			</div>
 		</div>
-
-		<button
-			type="button"
-			class="shadow-subtle mr-auto mt-3 rounded bg-amber-300 px-3 py-1 text-white transition-transform hover:-translate-y-1"
-			@click="changingBoardSize = true"
-		>
-			change board size
-		</button>
 	</div>
 </template>
