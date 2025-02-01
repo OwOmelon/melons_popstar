@@ -198,7 +198,7 @@ async function boardResetAnimation(): Promise<void> {
 
 	<div
 		id="area"
-		class="relative flex h-screen max-h-[78ex] w-full max-w-[30em] flex-col px-2 pb-2"
+		class="relative flex h-screen max-h-[750px] w-full max-w-[30em] flex-col px-2 pb-2"
 	>
 		<PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
 
