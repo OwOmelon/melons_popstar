@@ -14,12 +14,16 @@ import GameOver from "@/gamestate/components/GameOver.vue";
 import Board from "@/board/components/Board.vue";
 import ModalWrapper from "@/app/components/ModalWrapper.vue";
 
+import Scores from "@/scores/components/Scores.vue";
+import ShowAllScoresButton from "@/scores/components/ShowAllScoresButton.vue";
+
 import { useTemplateRef, ref } from "vue";
 import { storeToRefs } from "pinia";
 
 import { useBoardStore } from "@/board/stores/board";
 import { useGameStateStore } from "@/gamestate/stores/gamestate";
 import { useSettingsStore } from "@/settings/stores/settings";
+import { useScoresStore } from "@/scores/stores/scores";
 
 import { delay } from "@/app/utils/delay";
 import { shakeElement } from "@/app/utils/shake_element";
@@ -35,6 +39,8 @@ const { resetState, addPoints, nextStage } = useGameStateStore();
 const { paused, settings_Toggles, changingBoardSize } =
 	storeToRefs(useSettingsStore());
 const { changeBoardSize } = useSettingsStore();
+
+const { saveScore } = useScoresStore();
 
 // ----------
 
@@ -70,6 +76,7 @@ async function onBoardClear(): Promise<void> {
 		nextStage();
 	} else {
 		gameover.value = true;
+		saveScore(points.value);
 	}
 }
 
@@ -200,10 +207,15 @@ async function boardResetAnimation(): Promise<void> {
 		id="area"
 		class="relative flex h-screen max-h-[750px] w-full max-w-[30em] flex-col px-2 pb-2"
 	>
-		<PauseBtn class="mb-5 ml-auto mr-5 mt-3" />
+		<div class="mb-5 ml-auto mr-5 mt-3">
+			<ShowAllScoresButton class="lg:hidden" />
+			<PauseBtn class="ml-3" />
+		</div>
 
 		<GameInfo />
 		<BoardClearBonus :board-clear-bonus="boardClearBonus" />
+
+		<Scores :current-score="points" />
 
 		<Board ref="boardRef" @on-tile-clear="onTileClear" />
 	</div>
