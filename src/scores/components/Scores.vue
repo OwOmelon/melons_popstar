@@ -98,6 +98,7 @@ const display = computed<ScoreDisplay[]>(() => {
 ul {
 	scrollbar-width: thin;
 	scrollbar-gutter: stable both-edges;
+	scrollbar-color: theme(colors.amber.400) rgba(255, 255, 255, 0.75);
 }
 
 ul li {
