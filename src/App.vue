@@ -127,11 +127,7 @@ async function boardResetAnimation(): Promise<void> {
 	const br = boardRef.value.$el as HTMLElement;
 	const brBounding = br.getBoundingClientRect();
 	const animDur = 750;
-	const skipLeave =
-		!board.value.size ||
-		Array.from(board.value.values()).every((column) =>
-			column.every((tile) => tile.state === "CLEARED"),
-		);
+	const skipLeave = !board.value.size;
 
 	if (!skipLeave) {
 		// LEAVE RIGHT
@@ -142,56 +138,45 @@ async function boardResetAnimation(): Promise<void> {
 					transform: `translateX(${window.innerWidth - brBounding.left}px)`,
 				},
 			],
-			{ easing: "ease-in", fill: "forwards", duration: animDur },
+			{
+				easing: "cubic-bezier(0.5, 0, 0.75, 0)",
+				fill: "forwards",
+				duration: animDur,
+			},
 		);
 
 		await delay(animDur);
 	}
 
-	// RESET BOARD AND TELEPORT LEFT
-
-	br.animate(
-		[
-			{
-				transform: `translateX(${brBounding.right - window.innerWidth - brBounding.width}px)`,
-			},
-		],
-		{ fill: "forwards", duration: 1 },
-	);
-
-	await delay(110);
+	const startLeftPos = `translateX(${brBounding.right - window.innerWidth - brBounding.width}px) translateY(0)`;
 
 	resetBoard();
 
-	await delay(200);
+	br.animate({ transform: startLeftPos }, { fill: "forwards", duration: 1 });
 
-	// ENTER RIGHT AND RISE UP
-
-	br.animate(
-		[
-			{
-				transform: "translateX(0) translateY(-4rem)",
-			},
-		],
-		{ easing: "ease-in-out", fill: "forwards", duration: animDur },
-	);
-
-	await delay(animDur + animDur / 3);
-
+	// START LEFT
+	// ENTER CENTER AND RISE UP
 	// FALL DOWN
 
+	await delay(100);
+
 	br.animate(
-		[
-			{
-				transform: "translateX(0)",
-			},
-		],
-		{ easing: "ease-in", fill: "forwards", duration: animDur / 5 },
+		{
+			transform: [
+				startLeftPos,
+				"translateX(0) translateY(-4rem)",
+				"translateX(0)",
+			],
+			easing: [
+				"cubic-bezier(0.25, 1, 0.5, 1)",
+				"linear(0, 0.397 18.2%, 0.997 33.4%, 0.763 39.8%, 0.687 45.2%, 0.75 50.2%, 0.998 57.8%, 0.857 65.4%, 0.999 74.6%, 0.944 80.2%, 1 88.2%, 1)",
+			],
+			offset: [0, 0.75],
+		},
+		{ fill: "forwards", duration: animDur },
 	);
 
-	await delay(animDur / 5);
-
-	shakeBoardRef();
+	await delay(animDur);
 
 	return;
 }
