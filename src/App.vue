@@ -118,6 +118,13 @@ async function getBoardClearBonus(): Promise<void> {
 }
 
 async function boardResetAnimation(): Promise<void> {
+	if (!settings_Toggles.value.board_reset_animation) {
+		resetBoard();
+		shakeBoardRef();
+
+		return;
+	}
+
 	if (!boardRef.value) {
 		alert("BOARD ELEMENT IS UNDEFINED");
 
@@ -177,8 +184,6 @@ async function boardResetAnimation(): Promise<void> {
 	);
 
 	await delay(animDur);
-
-	return;
 }
 </script>
 

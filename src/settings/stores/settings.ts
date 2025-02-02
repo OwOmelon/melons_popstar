@@ -18,8 +18,9 @@ export const useSettingsStore = defineStore("settings", () => {
 
 	const userPreferredToggles = ref({
 		background_animation: true,
-		tile_clear_animation: true,
+		board_reset_animation: true,
 		board_shake: true,
+		tile_clear_animation: true,
 		column_sorting_animation: true,
 	});
 
