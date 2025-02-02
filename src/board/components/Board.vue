@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import Tile from "./Tile.vue";
 
-import { useTemplateRef } from "vue";
+import { useTemplateRef, watch, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { type OnClickOutsideHandler, onClickOutside } from "@vueuse/core";
 import { type BoardPosition, useBoardStore } from "../stores/board";
+import { useSettingsStore } from "@/settings/stores/settings";
 
 const emit = defineEmits<{
 	"on-tile-clear": [number];
@@ -54,6 +55,36 @@ function removeTileDeselectListener(e: PointerEvent) {
 	boardEl_ClickOutside_Listener = null;
 	boardEl.value?.removeEventListener("pointerup", windowPointerUp_Handler);
 }
+
+// ==========
+
+const { settings_Toggles } = storeToRefs(useSettingsStore());
+
+function setColumnTransitionProperties() {
+	if (!boardEl.value) {
+		alert("board el is undefined");
+
+		return;
+	}
+
+	let property = "all";
+	let duration = "500ms";
+
+	if (!settings_Toggles.value.column_sorting_animation) {
+		property = "none";
+		duration = "0";
+	}
+
+	boardEl.value.style.setProperty("--column-transition-property", property);
+	boardEl.value.style.setProperty("--column-transition-duration", duration);
+}
+
+watch(
+	() => settings_Toggles.value.column_sorting_animation,
+	setColumnTransitionProperties,
+);
+
+onMounted(setColumnTransitionProperties);
 </script>
 
 <template>
@@ -88,7 +119,8 @@ function removeTileDeselectListener(e: PointerEvent) {
 .column-move,
 .column-enter-active,
 .column-leave-active {
-	transition: all 500ms
+	transition: var(--column-transition-property)
+		var(--column-transition-duration)
 		linear(
 			0,
 			0.115 4.2%,

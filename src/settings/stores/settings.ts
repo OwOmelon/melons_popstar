@@ -17,6 +17,7 @@ export const useSettingsStore = defineStore("settings", () => {
 			background_animation: true,
 			tile_clear_animation: true,
 			board_shake: true,
+			column_sorting_animation: true,
 		},
 	);
 
