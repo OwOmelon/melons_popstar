@@ -1,6 +1,6 @@
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { defineStore } from "pinia";
-import { useStorage, useFullscreen } from "@vueuse/core";
+import { useFullscreen } from "@vueuse/core";
 
 export const useSettingsStore = defineStore("settings", () => {
 	const paused = ref(false);
@@ -8,22 +8,24 @@ export const useSettingsStore = defineStore("settings", () => {
 	// ==========
 
 	const docEl = ref<HTMLElement | null>(null);
-
 	const { isFullscreen, toggle: toggleFullScreen } = useFullscreen(docEl);
 
-	const settings_Toggles_UserPreferences = useStorage(
-		"settings_toggles_userpreferences",
-		{
-			background_animation: true,
-			tile_clear_animation: true,
-			board_shake: true,
-			column_sorting_animation: true,
-		},
-	);
+	onMounted(() => {
+		docEl.value = document.documentElement;
+	});
+
+	// ==========
+
+	const userPreferredToggles = ref({
+		background_animation: true,
+		tile_clear_animation: true,
+		board_shake: true,
+		column_sorting_animation: true,
+	});
 
 	const settings_Toggles = computed(() => {
 		return {
-			...settings_Toggles_UserPreferences.value,
+			...userPreferredToggles.value,
 			full_screen: isFullscreen.value,
 		};
 	});
@@ -35,13 +37,48 @@ export const useSettingsStore = defineStore("settings", () => {
 			return;
 		}
 
-		settings_Toggles_UserPreferences.value[key] =
-			!settings_Toggles_UserPreferences.value[key];
+		userPreferredToggles.value[key] = !userPreferredToggles.value[key];
 	}
 
-	onMounted(() => {
-		docEl.value = document.documentElement;
+	// ==========
+
+	const localStorageKey = "userPreferredToggles";
+
+	function getUserPreferredTogglesFromLocalStorage() {
+		const localStorageItem = JSON.parse(
+			localStorage.getItem(localStorageKey) || "{}",
+		);
+
+		if (localStorageItem && checkUserPreferredToggles(localStorageItem)) {
+			userPreferredToggles.value = localStorageItem;
+		}
+	}
+
+	function checkUserPreferredToggles(
+		toggles: typeof userPreferredToggles.value,
+	) {
+		if (
+			typeof toggles !== "object" ||
+			Array.isArray(toggles) ||
+			toggles === null
+		)
+			return false;
+
+		const shouldHaveKeys = Object.keys(userPreferredToggles.value);
+		const togglesKeys = Object.keys(toggles);
+
+		return shouldHaveKeys.length !== togglesKeys.length
+			? false
+			: togglesKeys.every((key) => shouldHaveKeys.indexOf(key) !== -1);
+	}
+
+	watch(userPreferredToggles, (t) => {
+		localStorage.setlocalStorageItem(localStorageKey, JSON.stringify(t));
 	});
+
+	onMounted(getUserPreferredTogglesFromLocalStorage);
+
+	// ==========
 
 	return {
 		paused,
