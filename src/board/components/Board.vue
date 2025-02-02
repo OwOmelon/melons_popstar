@@ -88,7 +88,17 @@ function removeTileDeselectListener(e: PointerEvent) {
 .column-move,
 .column-enter-active,
 .column-leave-active {
-	transition: all 500ms cubic-bezier(0.86, 0, 0.14, 1);
+	transition: all 500ms
+		linear(
+			0,
+			0.115 4.2%,
+			0.83 17.2%,
+			0.969 21.6%,
+			1.045 26.2%,
+			1.069 33.4%,
+			0.996 58.6%,
+			1
+		);
 }
 
 .column-enter-from,
