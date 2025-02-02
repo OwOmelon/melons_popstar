@@ -19,6 +19,9 @@ const shakeKeyframes = [
 		{
 			transform: "translateX(-3px) translateY(-3px)",
 		},
+		{
+			transform: "translateX(0) translateY(0)",
+		},
 	],
 	[
 		{
@@ -38,6 +41,9 @@ const shakeKeyframes = [
 		},
 		{
 			transform: "translateX(3px) translateY(3px)",
+		},
+		{
+			transform: "translateX(0) translateY(0)",
 		},
 	],
 ];
