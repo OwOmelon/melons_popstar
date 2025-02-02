@@ -44,7 +44,7 @@ const { saveScore } = useScoresStore();
 const boardRef = useTemplateRef<typeof Board>("boardRef");
 
 function shakeBoardRef() {
-	if (settings_Toggles.value.boardShake.toggled && boardRef.value?.$el) {
+	if (settings_Toggles.value.board_shake && boardRef.value?.$el) {
 		shakeElement(boardRef.value.$el);
 	}
 }

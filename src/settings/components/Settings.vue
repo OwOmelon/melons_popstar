@@ -9,11 +9,11 @@ const { toggleSetting } = useSettingsStore();
 <template>
 	<div class="settings flex flex-col gap-2">
 		<div
-			v-for="({ displayName, toggled }, settingsKey, _) in settings_Toggles"
+			v-for="(toggled, key) in settings_Toggles"
 			class="flex grow items-center justify-between gap-2"
-			@click="toggleSetting(settingsKey)"
+			@click="toggleSetting(key)"
 		>
-			{{ displayName }}
+			{{ key.replaceAll("_", " ") }}
 
 			<div
 				:class="[

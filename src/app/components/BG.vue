@@ -24,7 +24,7 @@ const opacity = computed(() => {
 		>
 			<div
 				:class="[
-					{ scroll: settings_Toggles.bgAnim.toggled },
+					{ scroll: settings_Toggles.background_animation },
 					opacity,
 					'bg-image absolute h-[200%] w-[200%] transition-opacity duration-1000',
 				]"
