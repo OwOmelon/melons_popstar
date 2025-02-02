@@ -62,7 +62,6 @@ const display = computed<ScoreDisplay[]>(() => {
 
 <template>
 	<div
-		v-if="scores.length"
 		:class="[
 			`${showAllScores ? 'show' : 'hide'}-all-scores`,
 			'absolute top-12 z-50 flex w-60 flex-col gap-3 rounded border-2 border-white bg-white/25 p-3 backdrop-blur transition-[opacity,_transform] duration-1000 lg:right-[calc(100%_+_0.5rem)]',
